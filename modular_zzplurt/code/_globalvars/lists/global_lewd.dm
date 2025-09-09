@@ -101,4 +101,5 @@ GLOBAL_LIST_INIT(skirt_peekable, typecacheof(list(
 			/obj/item/clothing/under/rank/cargo/qm/skirt,
 			// Everyone else
 			/obj/item/clothing/under/rank/cargo/tech/skirt,
+			/obj/item/clothing/under/sweater/keyhole,
 )))
