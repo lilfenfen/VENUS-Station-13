@@ -90,80 +90,107 @@ SUBSYSTEM_DEF(machines)
 	return ..()
 
 /datum/controller/subsystem/machines/fire(resumed = FALSE)
-	if (!resumed)
-		for(var/datum/powernet/powernet as anything in powernets)
-			powernet.reset() //reset the power state.
-		current_part = SSMACHINES_MACHINES_EARLY
-		src.currentrun = processing_early.Copy()
+	// Precompute
+	var/f = wait // local alias
+	var/tick_scale = f * 0.1
 
-	//Processing machines that get the priority power draw
-	if(current_part == SSMACHINES_MACHINES_EARLY)
-		//cache for sanic speed (lists are references anyways)
-		var/list/currentrun = src.currentrun
-		while(currentrun.len)
-			var/obj/machinery/thing = currentrun[currentrun.len]
-			currentrun.len--
-			if(QDELETED(thing) || thing.process_early(wait * 0.1) == PROCESS_KILL)
-				processing_early -= thing
-				thing.datum_flags &= ~DF_ISPROCESSING
+	// Reset powernets only when not resumed (we still want power reset each full fire cycle)
+	if (!resumed)
+		for (var/datum/powernet/pn in powernets)
+			pn.reset()
+		current_part = SSMACHINES_MACHINES_EARLY
+		// We will iterate the lists directly without creating heavy copies.
+		// We use a local reference and an index-based pop-from-end loop for speed.
+		// Expectation: processing_early contains objects and is mutated when items die.
+		// No .Copy() allocation here.
+		// NOTE: when stopping processing we remove from the list via swapping/pop trick in helper.
+		src.currentrun = processing_early // keep for Recover compatibility; not copying
+
+	// -------------------------
+	// EARLY PROCESSING
+	// -------------------------
+	if (current_part == SSMACHINES_MACHINES_EARLY)
+		while(processing_early.len)
+			var/obj/machinery/thing = processing_early[processing_early.len]
+			processing_early.len--
+			if(!thing) // null guard
+				continue
+			// fast-path QDELETED only when necessary: check early return value
+			var/result = thing.process_early(tick_scale)
+			if(result == PROCESS_KILL || QDELETED(thing))
+				// centralized cleanup
+				_remove_machine_from_processing(thing)
+			// tick-safety
 			if (MC_TICK_CHECK)
+				// preserve current location so we continue later from same stage
 				return
 		current_part = apc_steps[1]
-		src.currentrun = processing_apcs.Copy()
+		src.currentrun = processing_apcs
 
-	//Processing APCs
-	while(current_part in apc_steps)
-		//cache for sanic speed (lists are references anyways)
-		var/list/currentrun = src.currentrun
-		while(currentrun.len)
-			var/obj/machinery/power/apc/apc = currentrun[currentrun.len]
-			currentrun.len--
+	// -------------------------
+	// APC Processing (multi-stage)
+	// -------------------------
+	// Use an integer index to walk apc_steps rather than Find() each loop.
+	var/apc_index = 1
+	while(apc_index <= apc_steps.len)
+		var/step = apc_steps[apc_index]
+		// process current APC list
+		while(processing_apcs.len)
+			var/obj/machinery/power/apc/apc = processing_apcs[processing_apcs.len]
+			processing_apcs.len--
+			if(!apc)
+				continue
 			if(QDELETED(apc))
-				processing_apcs -= apc
-				apc.datum_flags &= ~DF_ISPROCESSING
-			switch(current_part)
-				if(SSMACHINES_APCS_EARLY)
-					apc.early_process(wait * 0.1)
-				if(SSMACHINES_APCS_LATE)
-					apc.charge_channel(null, wait * 0.1)
-					apc.late_process(wait * 0.1)
-				else
-					apc.charge_channel(current_part, wait * 0.1)
-			if(MC_TICK_CHECK)
+				_remove_apc_from_processing(apc)
+				continue
+			// Per-step behaviour
+			if(step == SSMACHINES_APCS_EARLY)
+				apc.early_process(tick_scale)
+			else if(step == SSMACHINES_APCS_LATE)
+				apc.charge_channel(null, tick_scale)
+				apc.late_process(tick_scale)
+			else
+				apc.charge_channel(step, tick_scale)
+			// tick-safety
+			if (MC_TICK_CHECK)
 				return
-		var/next_index = apc_steps.Find(current_part) + 1
-		if (next_index > apc_steps.len)
+		// move to next apc step
+		apc_index++
+		if (apc_index > apc_steps.len)
 			current_part = SSMACHINES_MACHINES
-			src.currentrun = processing.Copy()
 			break
-		current_part = apc_steps[next_index]
-		src.currentrun = processing_apcs.Copy()
+		// ensure currentrun points to the APC processing list before next iteration
+		src.currentrun = processing_apcs
 
-	//Processing all machines
-	if(current_part == SSMACHINES_MACHINES)
-		//cache for sanic speed (lists are references anyways)
-		var/list/currentrun = src.currentrun
-		while(currentrun.len)
-			var/obj/machinery/thing = currentrun[currentrun.len]
-			currentrun.len--
-			if(QDELETED(thing) || thing.process(wait * 0.1) == PROCESS_KILL)
-				processing -= thing
-				thing.datum_flags &= ~DF_ISPROCESSING
+	// -------------------------
+	// MAIN MACHINE PROCESSING
+	// -------------------------
+	if (current_part == SSMACHINES_MACHINES)
+		while(processing.len)
+			var/obj/machinery/thing = processing[processing.len]
+			processing.len--
+			if(!thing)
+				continue
+			var/result = thing.process(tick_scale)
+			if(result == PROCESS_KILL || QDELETED(thing))
+				_remove_machine_from_processing(thing)
 			if (MC_TICK_CHECK)
 				return
 		current_part = SSMACHINES_MACHINES_LATE
-		src.currentrun = processing_late.Copy()
+		src.currentrun = processing_late
 
-	//Processing machines that record the power usage statistics
-	if(current_part == SSMACHINES_MACHINES_LATE)
-		//cache for sanic speed (lists are references anyways)
-		var/list/currentrun = src.currentrun
-		while(currentrun.len)
-			var/obj/machinery/thing = currentrun[currentrun.len]
-			currentrun.len--
-			if(QDELETED(thing) || thing.process_late(wait * 0.1) == PROCESS_KILL)
-				processing_late -= thing
-				thing.datum_flags &= ~DF_ISPROCESSING
+	// -------------------------
+	// LATE MACHINE PROCESSING
+	// -------------------------
+	if (current_part == SSMACHINES_MACHINES_LATE)
+		while(processing_late.len)
+			var/obj/machinery/thing = processing_late[processing_late.len]
+			processing_late.len--
+			if(!thing)
+				continue
+			var/result = thing.process_late(tick_scale)
+			if(result == PROCESS_KILL || QDELETED(thing))
+				_remove_machine_from_processing(thing)
 			if (MC_TICK_CHECK)
 				return
 
@@ -185,3 +212,34 @@ SUBSYSTEM_DEF(machines)
 		all_machines = SSmachines.all_machines
 	if(islist(SSmachines.machines_by_type))
 		machines_by_type = SSmachines.machines_by_type
+
+/datum/controller/subsystem/machines
+	/// Tracks which machines are currently scheduled, avoids duplicates
+	var/list/processing_set = list() // key: machine -> TRUE
+
+/datum/controller/subsystem/machines/proc/_remove_machine_from_processing(obj/machinery/machine)
+	if(!machine) return
+	src.processing -= machine
+	src.processing_early -= machine
+	src.processing_late -= machine
+	src.processing_apcs -= machine
+	src.processing_set -= machine
+	machine.datum_flags &= ~DF_ISPROCESSING
+
+/datum/controller/subsystem/machines/proc/_remove_apc_from_processing(obj/machinery/power/apc/apc)
+	if(!apc) return
+	src.processing_apcs -= apc
+	src.processing_set -= apc
+	apc.datum_flags &= ~DF_ISPROCESSING
+
+/datum/controller/subsystem/machines/proc/start_processing_machine(obj/machinery/m)
+	if(src.processing_set[m]) // already scheduled
+		return
+	src.processing_set[m] = TRUE
+	src.processing += m
+	m.datum_flags |= DF_ISPROCESSING
+
+/datum/controller/subsystem/machines/proc/stop_processing_machine(obj/machinery/m)
+	if(!src.processing_set[m]) // not scheduled
+		return
+	_remove_machine_from_processing(m)
