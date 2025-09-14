@@ -1,6 +1,6 @@
 #define DEFAULT_TITLE_MAP_LOADTIME (150 SECONDS)
 
-#define DEFAULT_TITLE_SCREEN_IMAGE 'modular_zzvenus/icons/UI_Icons/title_screen/venus_title_screen.png' // VENUS EDIT START: TITLE SCREEN - old value: 'modular_skyrat/modules/title_screen/icons/skyrat_title_screen.png'
+#define DEFAULT_TITLE_SCREEN_IMAGE 'modular_zzveilbreak/icons/UI_Icons/vf_title_screen.png' // Veilbreak modification for shiny new title
 #define DEFAULT_TITLE_LOADING_SCREEN 'modular_skyrat/modules/title_screen/icons/loading_screen.gif'
 
 #define TITLE_PROGRESS_CACHE_FILE "data/progress_cache.json"
