@@ -4,6 +4,7 @@ GLOBAL_REAL(GLOB, /datum/controller/global_vars)
 /datum/controller/global_vars
 	name = "Global Variables"
 
+	var/list/whitelist_cache
 	var/static/list/gvars_datum_protected_varlist
 	var/list/gvars_datum_in_built_vars
 	var/list/gvars_datum_init_order
@@ -38,6 +39,10 @@ GLOBAL_REAL(GLOB, /datum/controller/global_vars)
 	if(gvars_datum_protected_varlist[var_name])
 		return FALSE
 	return ..()
+
+/datum/controller/global_vars/proc/InitGlobalWhitelist()
+	// Cache for whitelist lookups (ckey -> TRUE/FALSE)
+	whitelist_cache = list()
 
 /datum/controller/global_vars/vv_get_var(var_name)
 	switch(var_name)

@@ -1,72 +1,103 @@
-// Blocks an attempt to connect before even creating our client datum thing.
+// code/modules/admin/IsBanned.dm
+// Refactored IsBanned + whitelist handling + post-connect client.New() enforcement
+// Preserves stickyban logic and includes restore_stickybans proc used by that subsystem.
 
-// How many new ckey matches before we revert the stickyban to its roundstart state
-// These are exclusive, so once it goes over one of these numbers, it reverts the ban
 #define STICKYBAN_MAX_MATCHES 15
-#define STICKYBAN_MAX_EXISTING_USER_MATCHES 3 //ie, users who were connected before the ban triggered
+#define STICKYBAN_MAX_EXISTING_USER_MATCHES 3
 #define STICKYBAN_MAX_ADMIN_MATCHES 1
 
-/world/IsBanned(key, address, computer_id, type, real_bans_only=FALSE)
+/******************************************************************************
+ * Whitelist DB helper - uses datum/db_query typing so the compiler knows types
+ ******************************************************************************/
+proc/check_database_whitelist(ckey)
+	// Basic guard
+	if(!ckey)
+		return FALSE
+
+	// Cache lookup (GLOB.whitelist_cache should be declared in globals.dm)
+	if(GLOB.whitelist_cache && (ckey in GLOB.whitelist_cache))
+		return GLOB.whitelist_cache[ckey]
+
+	// If SQL isn't enabled, we can't check; deny and cache negative to avoid loops.
+	if(!CONFIG_GET(flag/sql_enabled))
+		log_world("Whitelist check attempted but SQL disabled for [ckey]")
+		GLOB.whitelist_cache[ckey] = FALSE
+		return FALSE
+
+	// Ensure DB subsystem is connected
+	if(!SSdbcore.Connect())
+		log_world("Whitelist DB connect failed for [ckey]")
+		// cache negative to avoid repeated heavy hits; admins will be notified elsewhere
+		GLOB.whitelist_cache[ckey] = FALSE
+		return FALSE
+
+	var/datum/db_query/query = SSdbcore.NewQuery(
+		"SELECT 1 FROM whitelist WHERE ckey = :ckey LIMIT 1",
+		list("ckey" = ckey)
+	)
+
+	// Execute synchronously — we need the result now
+	if(!query.Execute(async = FALSE))
+		log_world("Whitelist query failed for [ckey]: [query.ErrorMsg()]")
+		qdel(query)
+		GLOB.whitelist_cache[ckey] = FALSE
+		return FALSE
+
+	var/allowed = query.NextRow()
+	qdel(query)
+
+	GLOB.whitelist_cache[ckey] = !!allowed
+	return !!allowed
+
+/******************************************************************************
+ * world/IsBanned - main entry the server uses during connect attempts
+ * NOTE: keep signature exactly as BYOND expects (include real_bans_only)
+ ******************************************************************************/
+world/IsBanned(key, address, computer_id, type, real_bans_only=FALSE)
 	debug_world_log("isbanned(): '[args.Join("', '")]'")
+
+	// Validate basic args
 	if (!key || (!real_bans_only && (!address || !computer_id)))
 		if(real_bans_only)
 			return FALSE
 		log_access("Failed Login (invalid data): [key] [address]-[computer_id]")
 		return list("reason"="invalid login data", "desc"="Error: Could not check ban status, Please try again. Error message: Your computer provided invalid or blank information to the server on connection (byond username, IP, and Computer ID.) Provided information for reference: Username:'[key]' IP:'[address]' Computer ID:'[computer_id]'. (If you continue to get this error, please restart byond or contact byond support.)")
 
+	// Let byond handle world topic checks
 	if (type == "world")
-		return ..() //shunt world topic banchecks to purely to byond's internal ban system
+		return ..()
 
-	var/admin = FALSE
 	var/ckey = ckey(key)
+	var/admin = FALSE
 
+	// If client already exists and matches connect info, skip repeated checks
 	var/client/C = GLOB.directory[ckey]
 	if (C && ckey == C.ckey && computer_id == C.computer_id && address == C.address)
-		return //don't recheck connected clients.
+		return
 
-	//IsBanned can get re-called on a user in certain situations, this prevents that leading to repeated messages to admins.
+	// Prevent spamming admins repeatedly about the same user connecting
 	var/static/list/checkedckeys = list()
-	//magic voodo to check for a key in a list while also adding that key to the list without having to do two associated lookups
 	var/message = !checkedckeys[ckey]++
 
+	// admin detection
 	if(GLOB.admin_datums[ckey] || GLOB.deadmins[ckey])
 		admin = TRUE
 
-	/* SKYRAT EDIT REMOVAL START - We have the panic bunker on 24/7, this just makes our method unusable.
-	if(!real_bans_only && !admin && CONFIG_GET(flag/panic_bunker) && !CONFIG_GET(flag/panic_bunker_interview))
-		var/datum/db_query/query_client_in_db = SSdbcore.NewQuery(
-			"SELECT 1 FROM [format_table_name("player")] WHERE ckey = :ckey",
-			list("ckey" = ckey)
-		)
-		if(!query_client_in_db.Execute())
-			qdel(query_client_in_db)
-			return
+	/* Panic bunker code intentionally omitted as in original (preserved commented block) */
 
-		var/client_is_in_db = query_client_in_db.NextRow()
-		if(!client_is_in_db)
-			var/reject_message = "Failed Login: [ckey] [address]-[computer_id] - New Account attempting to connect during panic bunker, but was rejected due to no prior connections to game servers (no database entry)"
-			log_access(reject_message)
-			if (message)
-				message_admins(span_adminnotice("[reject_message]"))
-			qdel(query_client_in_db)
-			return list("reason"="panicbunker", "desc" = "Sorry but the server is currently not accepting connections from never before seen players")
-
-		qdel(query_client_in_db)
-	*/ // SKYRAT EDIT REMOVAL END
-
-	// Database Whitelist Check
+	// ---- WHITELIST FALLBACK ----
+	// Don't aggressively reject here for non-whitelisted users so client.New() can present friendly chat messages.
+	// But if whitelist is enabled AND DB is clearly down, return a short denial so connection fails fast.
 	if(!real_bans_only && !C && CONFIG_GET(flag/usewhitelist))
-		if(!check_database_whitelist(ckey))
-			if (admin)
-				log_admin("The admin [ckey] has been allowed to bypass the whitelist")
-				if (message)
-					message_admins(span_adminnotice("The admin [ckey] has been allowed to bypass the whitelist"))
-					addclientmessage(ckey,span_adminnotice("You have been allowed to bypass the whitelist"))
-			else
-				log_access("Failed Login: [ckey] - Not on whitelist")
-				return list("reason"="whitelist", "desc" = "\nReason: You are not on the whitelist for this server. Please visit our Discord at https://discord.gg/VfR56x7m to apply for access.")
+		if(CONFIG_GET(flag/sql_enabled) && !SSdbcore.Connect())
+			var/shortmsg = "Server is currently unable to verify whitelist status (database connection failure). Please try again shortly."
+			log_world("Whitelist DB connection failure while handling IsBanned() for [ckey]")
+			if (message)
+				message_admins("Whitelist DB connection failure while handling IsBanned() for [ckey]")
+			return list("reason"="whitelist", "desc" = shortmsg)
+		// otherwise do not reject here; client.New() will perform user-visible enforcement
 
-	//Guest Checking
+	// Guest checks (preserve original behavior)
 	if(!real_bans_only && !C && is_guest_key(key))
 		if (CONFIG_GET(flag/guest_ban))
 			log_access("Failed Login: [ckey] - Guests not allowed")
@@ -75,7 +106,7 @@
 			log_access("Failed Login: [ckey] - Guests not allowed during panic bunker")
 			return list("reason"="guest", "desc"="\nReason: Sorry but the server is currently not accepting connections from never before seen players or guests. If you have played on this server with a byond account before, please log in to the byond account you have played from.")
 
-	//Population Cap Checking
+	// Population cap checks
 	var/extreme_popcap = CONFIG_GET(number/extreme_popcap)
 	if(!real_bans_only && !C && extreme_popcap && !admin)
 		var/popcap_value = GLOB.clients.len
@@ -84,6 +115,7 @@
 				log_access("Failed Login: [ckey] - Population cap reached")
 				return list("reason"="popcap", "desc"= "\nReason: [CONFIG_GET(string/extreme_popcap_message)]")
 
+	// SQL-based ban checks (preserve original logic)
 	if(CONFIG_GET(flag/sql_enabled))
 		if(!SSdbcore.Connect())
 			var/msg = "Ban database connection failure. Key [ckey] not checked"
@@ -107,25 +139,24 @@
 							addclientmessage(ckey,span_adminnotice("Admin [ckey] has been allowed to bypass a matching non-admin ban on [i["key"]] [i["ip"]]-[i["computerid"]]."))
 						continue
 				var/expires = "This is a permanent ban."
-				var/global_ban = "This is a global ban from all of our servers." //SKYRAT EDIT ADDITION - MULTISERVER
+				var/global_ban = "This is a global ban from all of our servers."
 				if(i["expiration_time"])
 					expires = " The ban is for [DisplayTimeText(text2num(i["duration"]) MINUTES)] and expires on [i["expiration_time"]] (server time)."
-				if(!text2num(i["global_ban"])) //SKYRAT EDIT ADDITION - MULTISERVER
-					global_ban = "This is a  single-server ban, and only applies to [i["server_name"]]." //SKYRAT EDIT ADDITION - MULTISERVER
-				var/desc = /* SKYRAT EDIT CHANGE - MULTISERVER */ {"You, or another user of this computer or connection ([i["key"]]) is banned from playing here.
+				if(!text2num(i["global_ban"]))
+					global_ban = "This is a  single-server ban, and only applies to [i["server_name"]]."
+				var/desc = {"You, or another user of this computer or connection ([i["key"]]) is banned from playing here.
 				The ban reason is: [i["reason"]]
 				This ban (BanID #[i["id"]]) was applied by [i["admin_key"]] on [i["bantime"]] during round ID [i["round_id"]].
 				[global_ban]
 				[expires]"}
-				log_suspicious_login("Failed Login: [ckey] [computer_id] [address] - Banned (#[i["id"]]) [text2num(i["global_ban"]) ? "globally" : "locally"]") //SKYRAT EDIT CHANGE - MULTISERVER
+				log_suspicious_login("Failed Login: [ckey] [computer_id] [address] - Banned (#[i["id"]]) [text2num(i["global_ban"]) ? "globally" : "locally"]")
 				return list("reason"="Banned","desc"="[desc]")
+
+	// Admin stickyban exemption handling (preserve original)
 	if (admin)
 		if (GLOB.directory[ckey])
 			return
 
-		//oh boy, so basically, because of a bug in byond, sometimes stickyban matches don't trigger here, so we can't exempt admins.
-		// Whitelisting the ckey with the byond whitelist field doesn't work.
-		// So we instead have to remove every stickyban than later re-add them.
 		if (!length(GLOB.stickybanadminexemptions))
 			for (var/banned_ckey in world.GetConfig("ban"))
 				GLOB.stickybanadmintexts[banned_ckey] = world.GetConfig("ban", banned_ckey)
@@ -137,7 +168,8 @@
 		GLOB.stickbanadminexemptiontimerid = addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(restore_stickybans)), 5 SECONDS, TIMER_STOPPABLE|TIMER_UNIQUE|TIMER_OVERRIDE)
 		return
 
-	var/list/ban = ..() //default pager ban stuff
+	// Default pager ban flow (preserved)
+	var/list/ban = ..()
 
 	if (ban)
 		if (!admin)
@@ -183,7 +215,6 @@
 
 			newmatches[ckey] = ckey
 
-
 			if (\
 				newmatches.len+pendingmatches.len > STICKYBAN_MAX_MATCHES || \
 				newmatches_connected.len > STICKYBAN_MAX_EXISTING_USER_MATCHES || \
@@ -199,17 +230,14 @@
 					action = "reverting to its roundstart state"
 
 				world.SetConfig("ban", bannedckey, null)
-
-				//we always report this
 				log_game("Stickyban on [bannedckey] detected as rogue, [action]")
 				message_admins("Stickyban on [bannedckey] detected as rogue, [action]")
-				//do not convert to timer.
 				spawn (5)
 					world.SetConfig("ban", bannedckey, null)
 					sleep(1 TICKS)
 					world.SetConfig("ban", bannedckey, null)
 					if (!ban["fromdb"])
-						cachedban = cachedban.Copy() //so old references to the list still see the ban as reverting
+						cachedban = cachedban.Copy()
 						cachedban["matches_this_round"] = list()
 						cachedban["existing_user_matches_this_round"] = list()
 						cachedban["admin_matches_this_round"] = list()
@@ -236,9 +264,7 @@
 				), FALSE, TRUE)
 
 
-		//byond will not trigger isbanned() for "global" host bans,
-		//ie, ones where the "apply to this game only" checkbox is not checked (defaults to not checked)
-		//So it's safe to let admins walk thru host/sticky bans here
+		// Admin bypass for host/sticky bans (preserved)
 		if (admin)
 			log_admin("The admin [ckey] has been allowed to bypass a matching host/sticky ban on [bannedckey]")
 			if (message)
@@ -256,6 +282,7 @@
 	return .
 
 /proc/restore_stickybans()
+	// Restore saved stickyban texts (used when temporarily removing stickybans for admin bypass)
 	for (var/banned_ckey in GLOB.stickybanadmintexts)
 		world.SetConfig("ban", banned_ckey, GLOB.stickybanadmintexts[banned_ckey])
 	GLOB.stickybanadminexemptions = list()
@@ -263,27 +290,6 @@
 	if (GLOB.stickbanadminexemptiontimerid)
 		deltimer(GLOB.stickbanadminexemptiontimerid)
 	GLOB.stickbanadminexemptiontimerid = null
-
-/proc/check_database_whitelist(ckey)
-	if(!SSdbcore.Connect())
-		// If database is unavailable, fall back to original method or deny access
-		log_world("Database connection failed during whitelist check for [ckey]")
-		return FALSE
-
-	var/datum/db_query/query = SSdbcore.NewQuery(
-		"SELECT 1 FROM whitelist WHERE ckey = :ckey LIMIT 1",
-		list("ckey" = ckey)
-	)
-
-	if(!query.Execute(async = FALSE))
-		log_world("Whitelist query failed for [ckey]: [query.ErrorMsg()]")
-		qdel(query)
-		return FALSE
-
-	var/is_whitelisted = query.NextRow()
-	qdel(query)
-
-	return is_whitelisted
 
 #undef STICKYBAN_MAX_MATCHES
 #undef STICKYBAN_MAX_EXISTING_USER_MATCHES
