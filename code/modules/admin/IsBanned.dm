@@ -1,7 +1,7 @@
-//Blocks an attempt to connect before even creating our client datum thing.
+// Blocks an attempt to connect before even creating our client datum thing.
 
-//How many new ckey matches before we revert the stickyban to its roundstart state
-//These are exclusive, so once it goes over one of these numbers, it reverts the ban
+// How many new ckey matches before we revert the stickyban to its roundstart state
+// These are exclusive, so once it goes over one of these numbers, it reverts the ban
 #define STICKYBAN_MAX_MATCHES 15
 #define STICKYBAN_MAX_EXISTING_USER_MATCHES 3 //ie, users who were connected before the ban triggered
 #define STICKYBAN_MAX_ADMIN_MATCHES 1
@@ -54,9 +54,9 @@
 		qdel(query_client_in_db)
 	*/ // SKYRAT EDIT REMOVAL END
 
-	//Whitelist
+	// Database Whitelist Check
 	if(!real_bans_only && !C && CONFIG_GET(flag/usewhitelist))
-		if(!check_whitelist(ckey))
+		if(!check_database_whitelist(ckey))
 			if (admin)
 				log_admin("The admin [ckey] has been allowed to bypass the whitelist")
 				if (message)
@@ -64,7 +64,7 @@
 					addclientmessage(ckey,span_adminnotice("You have been allowed to bypass the whitelist"))
 			else
 				log_access("Failed Login: [ckey] - Not on whitelist")
-				return list("reason"="whitelist", "desc" = "\nReason: You are not on the white list for this server")
+				return list("reason"="whitelist", "desc" = "\nReason: You are not on the whitelist for this server. Please visit our Discord at https://discord.gg/VfR56x7m to apply for access.")
 
 	//Guest Checking
 	if(!real_bans_only && !C && is_guest_key(key))
@@ -263,6 +263,27 @@
 	if (GLOB.stickbanadminexemptiontimerid)
 		deltimer(GLOB.stickbanadminexemptiontimerid)
 	GLOB.stickbanadminexemptiontimerid = null
+
+/proc/check_database_whitelist(ckey)
+	if(!SSdbcore.Connect())
+		// If database is unavailable, fall back to original method or deny access
+		log_world("Database connection failed during whitelist check for [ckey]")
+		return FALSE
+
+	var/datum/db_query/query = SSdbcore.NewQuery(
+		"SELECT 1 FROM whitelist WHERE ckey = :ckey LIMIT 1",
+		list("ckey" = ckey)
+	)
+
+	if(!query.Execute(async = FALSE))
+		log_world("Whitelist query failed for [ckey]: [query.ErrorMsg()]")
+		qdel(query)
+		return FALSE
+
+	var/is_whitelisted = query.NextRow()
+	qdel(query)
+
+	return is_whitelisted
 
 #undef STICKYBAN_MAX_MATCHES
 #undef STICKYBAN_MAX_EXISTING_USER_MATCHES
