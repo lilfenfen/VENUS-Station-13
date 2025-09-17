@@ -719,8 +719,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 	// Check if player is in whitelist
 	var/datum/db_query/query_whitelist = SSdbcore.NewQuery(
-		"SELECT ckey FROM [format_table_name("whitelist")] WHERE ckey = :ckey",
-		list("ckey" = ckey)
+		"SELECT ckey FROM [format_table_name("whitelist")] WHERE LOWER(ckey) = LOWER(:ckey)",list("ckey" = ckey)
 	)
 	var/is_whitelisted = query_whitelist.Execute() && query_whitelist.NextRow()
 	qdel(query_whitelist)
@@ -728,7 +727,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	if(!is_whitelisted)
 		log_access("Failed Login: [key] - [address] - Not in whitelist")
 		message_admins("<span class='adminnotice'>Failed Login: [key] - [address] - Not in whitelist</span>")
-		to_chat_immediate(src, "<span class='notice'>You are not whitelisted to play on this server. Visit [forumurl] to see how to get whitelisted.</span>")
+		to_chat_immediate(src, "<span class='notice'>You are not whitelisted to play on this server. Visit https://discord.gg/VfR56x7m to see how to get whitelisted.</span>")
 		qdel(query_client_in_db)
 		qdel(src)
 		return
