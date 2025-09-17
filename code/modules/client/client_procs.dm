@@ -728,7 +728,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	if(!is_whitelisted)
 		log_access("Failed Login: [key] - [address] - Not in whitelist")
 		message_admins("<span class='adminnotice'>Failed Login: [key] - [address] - Not in whitelist</span>")
-		to_chat_immediate(src, "<span class='notice'>You are not whitelisted to play on this server.</span>")
+		to_chat_immediate(src, "<span class='notice'>You are not whitelisted to play on this server. Visit [forumurl] to see how to get whitelisted.</span>")
 		qdel(query_client_in_db)
 		qdel(src)
 		return
