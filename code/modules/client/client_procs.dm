@@ -714,95 +714,90 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 				qdel(src)
 				return
 */
+// Did we find this client in the player table already?
 	var/client_is_in_db = query_client_in_db.NextRow()
 
+	// Check if player is in whitelist
+	var/datum/db_query/query_whitelist = SSdbcore.NewQuery(
+		"SELECT ckey FROM [format_table_name("whitelist")] WHERE ckey = :ckey",
+		list("ckey" = ckey)
+	)
+	var/is_whitelisted = query_whitelist.Execute() && query_whitelist.NextRow()
+	qdel(query_whitelist)
+
+	if(!is_whitelisted)
+		log_access("Failed Login: [key] - [address] - Not in whitelist")
+		message_admins("<span class='adminnotice'>Failed Login: [key] - [address] - Not in whitelist</span>")
+		to_chat_immediate(src, "<span class='notice'>You are not whitelisted to play on this server.</span>")
+		qdel(query_client_in_db)
+		qdel(src)
+		return
+
 	if(!client_is_in_db)
-		//SKYRAT EDIT ADDITION BEGIN - PANICBUNKER
-		if (CONFIG_GET(flag/panic_bunker) && !holder && !GLOB.deadmins[ckey] && !(ckey in GLOB.bunker_passthrough))
-			log_access("Failed Login: [key] - [address] - New account attempting to connect during panic bunker")
-			message_admins("<span class='adminnotice'>Failed Login: [key] - [address] - New account attempting to connect during panic bunker</span>")
-			//BUBBER EDIT ADDITION BEGIN - PANICBUNKER TEXT
-			//BUBBER TODO: Make the to_chat a config thing and present it to skyrat
-			var/forumurl = CONFIG_GET(string/forumurl)
-			to_chat_immediate(src, {"<span class='notice'>Hi! This server is whitelist-enabled. <br> <br> To join our community, check out our Discord! To gain full access to the game server, read the rules and open a ticket in the #get-whitelisted channel under the \"Whitelist\" category in the Discord server linked here: <a href=' [forumurl] '>[forumurl]</a></span>"})
-			//BUBBER EDIT ADDITION END - PANICBUNKER TEXT
-			var/list/connectiontopic_a = params2list(connectiontopic)
-			var/list/panic_addr = CONFIG_GET(string/panic_server_address)
-			if(panic_addr && !connectiontopic_a["redirect"])
-				var/panic_name = CONFIG_GET(string/panic_server_name)
-				to_chat(src, "<span class='notice'>Sending you to [panic_name ? panic_name : panic_addr].</span>")
-				winset(src, null, "command=.options")
-				src << link("[panic_addr]?redirect=1")
-			qdel(query_client_in_db)
-			qdel(src)
-			return
-		//SKYRAT EDIT END
 		new_player = 1
 		account_join_date = findJoinDate()
-		var/datum/db_query/query_add_player = SSdbcore.NewQuery({"
-			INSERT INTO [format_table_name("player")] (`ckey`, `byond_key`, `firstseen`, `firstseen_round_id`, `lastseen`, `lastseen_round_id`, `ip`, `computerid`, `lastadminrank`, `accountjoindate`)
-			VALUES (:ckey, :key, Now(), :round_id, Now(), :round_id, INET_ATON(:ip), :computerid, :adminrank, :account_join_date)
-		"}, list("ckey" = ckey, "key" = key, "round_id" = GLOB.round_id, "ip" = address, "computerid" = computer_id, "adminrank" = admin_rank, "account_join_date" = account_join_date || null))
+
+		// Handle null values properly using SQL NULL
+		var/account_join_date_sql = account_join_date ? "'[account_join_date]'" : "NULL"
+
+		var/datum/db_query/query_add_player = SSdbcore.NewQuery(
+			"INSERT INTO [format_table_name("player")] (`ckey`, `byond_key`, `firstseen`, `firstseen_round_id`, `lastseen`, `lastseen_round_id`, `ip`, `computerid`, `lastadminrank`, `accountjoindate`) VALUES (:ckey, :key, Now(), :round_id, Now(), :round_id, INET_ATON(:ip), :computerid, :adminrank, [account_join_date_sql])",
+			list(
+				"ckey" = ckey,
+				"key" = key,
+				"round_id" = GLOB.round_id,
+				"ip" = address,
+				"computerid" = computer_id,
+				"adminrank" = admin_rank
+			)
+		)
 		if(!query_add_player.Execute())
 			qdel(query_client_in_db)
 			qdel(query_add_player)
 			return
 		qdel(query_add_player)
-		if(!account_join_date)
-			account_join_date = "Error"
-			account_age = -1
-		//SKYRAT EDIT ADDITION BEGIN - PANICBUNKER
-		else if(ckey in GLOB.bunker_passthrough)
-			GLOB.bunker_passthrough -= ckey
-		//SKYRAT EDIT END
+
 	qdel(query_client_in_db)
-	var/datum/db_query/query_get_client_age = SSdbcore.NewQuery(
-		"SELECT firstseen, DATEDIFF(Now(),firstseen), accountjoindate, DATEDIFF(Now(),accountjoindate) FROM [format_table_name("player")] WHERE ckey = :ckey",
-		list("ckey" = ckey)
-	)
-	if(!query_get_client_age.Execute())
-		qdel(query_get_client_age)
-		return
-	if(query_get_client_age.NextRow())
-		player_join_date = query_get_client_age.item[1]
-		player_age = text2num(query_get_client_age.item[2])
-		if(!account_join_date)
-			account_join_date = query_get_client_age.item[3]
-			account_age = text2num(query_get_client_age.item[4])
-			if(!account_age)
-				account_join_date = findJoinDate()
-				if(!account_join_date)
-					account_age = -1
-				else
-					var/datum/db_query/query_datediff = SSdbcore.NewQuery(
-						"SELECT DATEDIFF(Now(), :account_join_date)",
-						list("account_join_date" = account_join_date)
-					)
-					if(!query_datediff.Execute())
-						qdel(query_datediff)
-						qdel(query_get_client_age)
-						return
-					if(query_datediff.NextRow())
-						account_age = text2num(query_datediff.item[1])
-					qdel(query_datediff)
-	qdel(query_get_client_age)
+
 	if(!new_player)
-		SSdbcore.FireAndForget(
-			"UPDATE [format_table_name("player")] SET lastseen = Now(), lastseen_round_id = :round_id, ip = INET_ATON(:ip), computerid = :computerid, lastadminrank = :admin_rank, accountjoindate = :account_join_date WHERE ckey = :ckey",
-			list("round_id" = GLOB.round_id, "ip" = address, "computerid" = computer_id, "admin_rank" = admin_rank, "account_join_date" = account_join_date || null, "ckey" = ckey)
+		// For updates, handle accountjoindate properly
+		var/update_query = "UPDATE [format_table_name("player")] SET lastseen = Now(), lastseen_round_id = :round_id, ip = INET_ATON(:ip), computerid = :computerid, lastadminrank = :admin_rank"
+		var/update_params = list(
+			"round_id" = GLOB.round_id,
+			"ip" = address,
+			"computerid" = computer_id,
+			"admin_rank" = admin_rank,
+			"ckey" = ckey
 		)
-	if(!account_join_date)
-		account_join_date = "Error"
-	SSdbcore.FireAndForget(/* BUBBER EDIT - MULTISERVER */{"
-		INSERT INTO `[format_table_name("connection_log")]` (`id`,`datetime`,`server_name`,`server_ip`,`server_port`,`round_id`,`ckey`,`ip`,`computerid`)
-		VALUES(null,Now(),:server_name,INET_ATON(:internet_address),:port,:round_id,:ckey,INET_ATON(:ip),:computerid)
-	"}, list("server_name" = CONFIG_GET(string/serversqlname), "internet_address" = world.internet_address || "0", "port" = world.port, "round_id" = GLOB.round_id, "ckey" = ckey, "ip" = address, "computerid" = computer_id)) //BUBBER EDIT - MULTISERVER
+
+		// Only add accountjoindate to update if it exists
+		if(account_join_date)
+			update_query += ", accountjoindate = :account_join_date"
+			update_params["account_join_date"] = account_join_date
+
+		update_query += " WHERE ckey = :ckey"
+
+		SSdbcore.FireAndForget(
+			update_query,
+			update_params
+		)
+
+	// Connection log - ensure proper parameter handling
+	SSdbcore.FireAndForget(
+		"INSERT INTO `[format_table_name("connection_log")]` (`id`,`datetime`,`server_name`,`server_ip`,`server_port`,`round_id`,`ckey`,`ip`,`computerid`) VALUES(null,Now(),:server_name,INET_ATON(:internet_address),:port,:round_id,:ckey,INET_ATON(:ip),:computerid)",
+		list(
+			"server_name" = CONFIG_GET(string/serversqlname),
+			"internet_address" = world.internet_address || "0",
+			"port" = world.port,
+			"round_id" = GLOB.round_id,
+			"ckey" = ckey,
+			"ip" = address,
+			"computerid" = computer_id
+		)
+	)
 
 	SSserver_maint.UpdateHubStatus()
 
-	if(new_player)
-		player_age = -1
-	. = player_age
 
 /client/proc/findJoinDate()
 	var/list/http = world.Export("http://byond.com/members/[ckey]?format=text")
