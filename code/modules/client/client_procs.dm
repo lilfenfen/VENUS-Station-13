@@ -677,7 +677,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	var/normalized_ckey = ckeyEx(ckey)  // preserves special characters
 
 	var/datum/db_query/query_client_in_whitelist = SSdbcore.NewQuery(
-		"SELECT 1 FROM [format_table_name("whitelist")] WHERE LOWER(ckey) = LOWER(:ckey)",
+		"SELECT ckey FROM [format_table_name("whitelist")] WHERE LOWER(ckey) = LOWER(:ckey)",
 		list("ckey" = normalized_ckey)
 	)
 
@@ -727,7 +727,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 			//BUBBER EDIT ADDITION BEGIN - PANICBUNKER TEXT
 			//BUBBER TODO: Make the to_chat a config thing and present it to skyrat
 			var/forumurl = CONFIG_GET(string/forumurl)
-			to_chat_immediate(src, {"<span class='notice'>Hi! This server is whitelist-enabled. <br> <br> To join our community, check out our Discord! To gain full access to the game server, read the rules and open a ticket in the #get-whitelisted channel under the \"Whitelist\" category in the Discord server linked here: <a href=' [forumurl] '>[forumurl]</a></span>"})
+			to_chat_immediate(src, {"<span class='notice'>Hi! This server is whitelist-enabled. <br> <br> To join our community, check out our Discord! To gain full access to the game server, read the rules and open a ticket in the #how-to-whitelist channel under the \"getting started\" category in the Discord server linked here: <a href=' [forumurl] '>[forumurl]</a></span>"})
 			//BUBBER EDIT ADDITION END - PANICBUNKER TEXT
 			var/list/connectiontopic_a = params2list(connectiontopic)
 			var/list/panic_addr = CONFIG_GET(string/panic_server_address)
