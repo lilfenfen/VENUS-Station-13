@@ -674,15 +674,16 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	qdel(query_get_related_cid)
 	var/admin_rank = holder?.rank_names() || "Player"
 	var/new_player
-	var/normalized_ckey = ckey  // preserves special characters
+	var/normalized_ckey = ckeyEx(ckey)  // preserves special characters
 
 	var/datum/db_query/query_client_in_whitelist = SSdbcore.NewQuery(
-		"SELECT ckey FROM [format_table_name("whitelist")] WHERE ckey = :ckey",
+		"SELECT ckey FROM [format_table_name("whitelist")] WHERE LOWER(ckey) = LOWER(:ckey)",
 		list("ckey" = normalized_ckey)
 	)
 	if(!query_client_in_whitelist.Execute())
 		qdel(query_client_in_whitelist)
 		return
+
 /* SKYRAT EDIT - ORIGINAL:
 	var/client_is_in_db = query_client_in_db.NextRow()
 	// If we aren't an admin, and the flag is set (the panic bunker is enabled).
