@@ -674,13 +674,13 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	qdel(query_get_related_cid)
 	var/admin_rank = holder?.rank_names() || "Player"
 	var/new_player
-	var/datum/db_query/query_client_in_db = SSdbcore.NewQuery(
-		"SELECT 1 FROM [format_table_name("player")] WHERE ckey = :ckey",
-		list("ckey" = ckey)
+	var/normalized_ckey = ckeyEx(ckey)  // preserves special characters
+
+	var/datum/db_query/query_client_in_whitelist = SSdbcore.NewQuery(
+		"SELECT 1 FROM [format_table_name("whitelist")] WHERE LOWER(ckey) = LOWER(:ckey)",
+		list("ckey" = normalized_ckey)
 	)
-	if(!query_client_in_db.Execute())
-		qdel(query_client_in_db)
-		return
+
 /* SKYRAT EDIT - ORIGINAL:
 	var/client_is_in_db = query_client_in_db.NextRow()
 	// If we aren't an admin, and the flag is set (the panic bunker is enabled).
@@ -714,9 +714,9 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 				qdel(src)
 				return
 */
-	var/client_is_in_db = query_client_in_db.NextRow()
+	var/client_is_in_whitelist = query_client_in_whitelist.NextRow()
 
-	if(!client_is_in_db)
+	if(!client_is_in_whitelist)
 		//SKYRAT EDIT ADDITION BEGIN - PANICBUNKER
 		if (CONFIG_GET(flag/panic_bunker) && !holder && !GLOB.deadmins[ckey] && !(ckey in GLOB.bunker_passthrough))
 			log_access("Failed Login: [key] - [address] - New account attempting to connect during panic bunker")
@@ -733,7 +733,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 				to_chat(src, "<span class='notice'>Sending you to [panic_name ? panic_name : panic_addr].</span>")
 				winset(src, null, "command=.options")
 				src << link("[panic_addr]?redirect=1")
-			qdel(query_client_in_db)
+			qdel(query_client_in_whitelist)
 			qdel(src)
 			return
 		//SKYRAT EDIT END
@@ -744,7 +744,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 			VALUES (:ckey, :key, Now(), :round_id, Now(), :round_id, INET_ATON(:ip), :computerid, :adminrank, :account_join_date)
 		"}, list("ckey" = ckey, "key" = key, "round_id" = GLOB.round_id, "ip" = address, "computerid" = computer_id, "adminrank" = admin_rank, "account_join_date" = account_join_date || null))
 		if(!query_add_player.Execute())
-			qdel(query_client_in_db)
+			qdel(query_client_in_whitelist)
 			qdel(query_add_player)
 			return
 		qdel(query_add_player)
@@ -755,7 +755,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		else if(ckey in GLOB.bunker_passthrough)
 			GLOB.bunker_passthrough -= ckey
 		//SKYRAT EDIT END
-	qdel(query_client_in_db)
+	qdel(query_client_in_whitelist)
 	var/datum/db_query/query_get_client_age = SSdbcore.NewQuery(
 		"SELECT firstseen, DATEDIFF(Now(),firstseen), accountjoindate, DATEDIFF(Now(),accountjoindate) FROM [format_table_name("player")] WHERE ckey = :ckey",
 		list("ckey" = ckey)
