@@ -680,7 +680,9 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		"SELECT ckey FROM [format_table_name("whitelist")] WHERE ckey = :ckey",
 		list("ckey" = normalized_ckey)
 	)
-
+	if(!query_client_in_whitelist.Execute())
+		qdel(query_client_in_whitelist)
+		return
 /* SKYRAT EDIT - ORIGINAL:
 	var/client_is_in_db = query_client_in_db.NextRow()
 	// If we aren't an admin, and the flag is set (the panic bunker is enabled).
