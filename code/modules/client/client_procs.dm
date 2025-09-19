@@ -677,8 +677,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	var/normalized_ckey = ckeyEx(ckey)  // preserves special characters
 
 	var/datum/db_query/query_client_in_whitelist = SSdbcore.NewQuery(
-		"SELECT ckey FROM whitelist WHERE LOWER(ckey) = LOWER(:ckey)",
-		list("ckey" = normalized_ckey)
+		"SELECT ckey FROM whitelist WHERE LOWER(ckey) = LOWER(?)", list(normalized_ckey)
 	)
 
 /* SKYRAT EDIT - ORIGINAL:
