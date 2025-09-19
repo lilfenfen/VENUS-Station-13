@@ -717,7 +717,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	var/db_ckey = client_is_in_whitelist ? query_client_in_whitelist.item["ckey"] : "(no match)"
 
 	message_admins("DEBUG WL: normalized_ckey='[normalized_ckey]' | query='[query_client_in_whitelist.sql]' | db_ckey='[db_ckey]' | match=[client_is_in_whitelist ? "TRUE" : "FALSE"]")
-
+	message_admins("dbkey='[db_ckey]' | client_is_in_whitelist='[client_is_in_whitelist]' | query_client_in_whitelist='[query_client_in_whitelist]'")
 	if(!client_is_in_whitelist)
 		//SKYRAT EDIT ADDITION BEGIN - PANICBUNKER
 		if (CONFIG_GET(flag/panic_bunker) && !holder && !GLOB.deadmins[ckey] && !(ckey in GLOB.bunker_passthrough))
