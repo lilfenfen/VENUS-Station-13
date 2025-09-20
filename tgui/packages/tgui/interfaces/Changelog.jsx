@@ -53,6 +53,14 @@ export function Changelog() {
 
   const dateChoices = dates.map((date) => dateformat(date, 'mmmm yyyy', true));
 
+  const normalizeYaml = (raw, date) => {
+    if (!raw || typeof raw !== 'object') {
+      return { [date]: {} };
+    }
+    // Expected YAML: { author: [ { type: desc }, ... ] }
+    return { [date]: raw };
+  };
+
   const getData = async (date, attemptNumber = 1) => {
     const maxAttempts = 6;
 
@@ -65,6 +73,13 @@ export function Changelog() {
 
     try {
       const response = await fetch(resolveAsset(`${date}.yml`));
+      if (!response.ok) {
+        const timeout = 50 + attemptNumber * 50;
+        setData(`Loading changelog data${'.'.repeat(attemptNumber + 3)}`);
+        setTimeout(() => getData(date, attemptNumber + 1), timeout);
+        return;
+      }
+
       const result = await response.text();
 
       if (/^Cannot find/.test(result)) {
@@ -72,7 +87,8 @@ export function Changelog() {
         setData(`Loading changelog data${'.'.repeat(attemptNumber + 3)}`);
         setTimeout(() => getData(date, attemptNumber + 1), timeout);
       } else {
-        setData(yaml.load(result));
+        const parsed = yaml.load(result, { schema: yaml.CORE_SCHEMA });
+        setData(normalizeYaml(parsed, date));
       }
     } catch (err) {
       setData(`Error loading changelog: ${err.message}`);
@@ -257,27 +273,28 @@ export function Changelog() {
                 <h4>{name} changed:</h4>
                 <Box ml={3}>
                   <Table>
-                    {changes.map((change, idx) => {
-                      const changeType = Object.keys(change)[0];
-                      const { icon, color } =
-                        icons[changeType] || icons.unknown;
+                    {Array.isArray(changes) &&
+                      changes.map((change, idx) => {
+                        const changeType = Object.keys(change)[0];
+                        const { icon, color } =
+                          icons[changeType] || icons.unknown;
 
-                      return (
-                        <Table.Row key={`${changeType}-${idx}`}>
-                          <Table.Cell
-                            className={classes([
-                              'Changelog__Cell',
-                              'Changelog__Cell--Icon',
-                            ])}
-                          >
-                            <Icon color={color} name={icon} />
-                          </Table.Cell>
-                          <Table.Cell className="Changelog__Cell">
-                            {change[changeType]}
-                          </Table.Cell>
-                        </Table.Row>
-                      );
-                    })}
+                        return (
+                          <Table.Row key={`${changeType}-${idx}`}>
+                            <Table.Cell
+                              className={classes([
+                                'Changelog__Cell',
+                                'Changelog__Cell--Icon',
+                              ])}
+                            >
+                              <Icon color={color} name={icon} />
+                            </Table.Cell>
+                            <Table.Cell className="Changelog__Cell">
+                              {change[changeType]}
+                            </Table.Cell>
+                          </Table.Row>
+                        );
+                      })}
                   </Table>
                 </Box>
               </Fragment>

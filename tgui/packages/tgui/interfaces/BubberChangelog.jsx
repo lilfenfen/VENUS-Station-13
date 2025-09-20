@@ -150,7 +150,7 @@ const ChangelogEntry = ({ author, changes, source }) => {
 // --- LIST OF ENTRIES ---
 const ChangelogList = ({ contents }) => {
   const combinedDates = Object.keys(contents || {}).reduce((acc, source) => {
-    Object.keys(contents[source]).forEach((date) => {
+    Object.keys(contents[source] || {}).forEach((date) => {
       acc[date] = acc[date] || {};
       acc[date][source] = contents[source][date];
     });
@@ -175,14 +175,18 @@ const ChangelogList = ({ contents }) => {
           <Box ml={3}>
             {Object.entries(combinedDates[date]).map(([source, authors]) => (
               <Section key={source} mb={-2}>
-                {Object.entries(authors).map(([author, changes]) => (
-                  <ChangelogEntry
-                    key={author}
-                    author={author}
-                    changes={changes}
-                    source={source}
-                  />
-                ))}
+                {authors ? (
+                  Object.entries(authors).map(([author, changes]) => (
+                    <ChangelogEntry
+                      key={author}
+                      author={author}
+                      changes={changes}
+                      source={source}
+                    />
+                  ))
+                ) : (
+                  <i>No entries from {source}.</i>
+                )}
               </Section>
             ))}
           </Box>
@@ -238,18 +242,24 @@ export const BubberChangelog = () => {
             if (response.ok) {
               const text = await response.text();
               const parsed = yaml.load(text, { schema: yaml.CORE_SCHEMA });
+
+              // Normalize into { source: { date: parsed } }
               setContents((prev) => ({
                 ...prev,
-                [source]: parsed,
+                [source]: {
+                  ...(prev[source] || {}),
+                  [date]: parsed || {},
+                },
               }));
             } else if (response.status >= 500) {
-              // retry only on server errors
               hadRetryableErrors = true;
             } else {
-              // treat as permanent failure (404 etc.)
               setContents((prev) => ({
                 ...prev,
-                [source]: {},
+                [source]: {
+                  ...(prev[source] || {}),
+                  [date]: {},
+                },
               }));
             }
           } else {
@@ -319,8 +329,7 @@ export const BubberChangelog = () => {
         setSelectedDateIndex={setSelectedDateIndex}
       />
       <h2>Licenses</h2>
-      {/* licenses mapping preserved as in your original */}
-      {/* ... (unchanged license section for brevity) ... */}
+      {/* You can drop your license section here */}
     </Section>
   );
 
