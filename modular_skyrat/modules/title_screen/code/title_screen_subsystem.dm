@@ -28,11 +28,11 @@ SUBSYSTEM_DEF(title)
 
 /datum/controller/subsystem/title/Initialize()
 	var/dat
-	if(!fexists("[global.config.directory]/splurt/venus_title.txt")) // VENUS EDIT - original title_html.txt
-		to_chat(world, span_boldwarning("CRITICAL ERROR: Unable to read venus_title.txt, reverting to backup title html, please check your server config and ensure this file exists.")) // VENUS EDIT - original title_html.txt
+	if(!fexists("[global.config.directory]/splurt/veilbreak_title.txt")) // VENUS EDIT - original title_html.txt
+		to_chat(world, span_boldwarning("CRITICAL ERROR: Unable to read veilbreak_title.txt, reverting to backup title html, please check your server config and ensure this file exists.")) // VENUS EDIT - original title_html.txt
 		dat = DEFAULT_TITLE_HTML
 	else
-		dat = file2text("[global.config.directory]/splurt/venus_title.txt") // VENUS EDIT - original title_html.txt
+		dat = file2text("[global.config.directory]/splurt/veilbreak_title.txt") // VENUS EDIT - original title_html.txt
 
 	title_html = dat
 
