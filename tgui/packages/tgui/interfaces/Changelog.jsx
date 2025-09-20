@@ -177,6 +177,23 @@ export function Changelog() {
   const footer = (
     <Section>
       {dateDropdown}
+      <h3>Veilbreak Frontier License</h3>
+      <p>
+        {'All code is licensed under '}
+        <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a>.
+        {' See '}
+        <a href="https://github.com/lilfenfen/Veilbreak-Frontier/blob/master/LICENSE">
+          LICENSE
+        </a>
+        {' for more details.'}
+      </p>
+      <p>
+        {'All assets including icons and sound are under a '}
+        <a href="https://creativecommons.org/licenses/by-sa/3.0/">
+          Creative Commons 3.0 BY-SA license
+        </a>
+        {' unless otherwise indicated.'}
+      </p>
       <h3>GoonStation 13 Development Team</h3>
       <p>
         <b>Coders: </b>
@@ -188,8 +205,8 @@ export function Changelog() {
         Supernorn, Haruhi, Stuntwaffle, Pantaloons, Rho, SynthOrange, I Said No
       </p>
       <p>
-        Traditional Games Space Station 13 is thankful to the GoonStation 13
-        Development Team for its work on the game up to the
+        Veilbreak Frontier is thankful to the GoonStation 13 Development Team
+        for its work on the game up to the
         {' r4407 release. The changelog for changes up to r4407 can be seen '}
         <a href="https://wiki.ss13.co/Pre-2016_Changelog#April_2010">here</a>.
       </p>
@@ -250,13 +267,6 @@ export function Changelog() {
         </a>{' '}
         for the MIT license.
       </p>
-      <p>
-        {'All assets including icons and sound are under a '}
-        <a href="https://creativecommons.org/licenses/by-sa/3.0/">
-          Creative Commons 3.0 BY-SA license
-        </a>
-        {' unless otherwise indicated.'}
-      </p>
     </Section>
   );
 
@@ -304,7 +314,7 @@ export function Changelog() {
       ));
 
   return (
-    <Window title="Changelog" width={675} height={650}>
+    <Window title="Veilbreak Frontier Changelog" width={675} height={650}>
       <Window.Content scrollable>
         {header}
         {changes}

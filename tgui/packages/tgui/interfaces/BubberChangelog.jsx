@@ -17,10 +17,9 @@ import { resolveAsset } from '../assets';
 import { useBackend } from '../backend';
 import { Window } from '../layouts';
 
-// --- ICON MAP ---
 const icons = {
   add: { icon: 'check-circle', color: 'green' },
-  admin: { icon: 'user-shield', color: 'purple' },
+  admin: { icon: 'user-shield', color: 'purper' },
   balance: { icon: 'balance-scale-right', color: 'yellow' },
   bugfix: { icon: 'bug', color: 'green' },
   code_imp: { icon: 'code', color: 'green' },
@@ -46,83 +45,185 @@ const icons = {
   wip: { icon: 'hammer', color: 'orange' },
 };
 
-// --- SOURCE MAP ---
-const CHANGELOG_SOURCES = {
-  tg: { icon: 'tg_16.png', name: 'TG Station' },
-  bubber: { icon: 'bubber_16.png', name: 'Bubberstation' },
-  splurt: { icon: 'splurt_16.png', name: 'Splurt' },
-  venus: { icon: 'venus_16.png', name: 'VENUS' },
-  veilbreak: { icon: 'veilbreak_16.png', name: 'Veilbreak Frontier' },
-};
-
-// --- DATE PICKER ---
-const DateDropdown = ({
-  dates,
-  selectedDate,
-  setSelectedDate,
-  selectedDateIndex,
-  setSelectedDateIndex,
-}) => {
-  if (!dates || dates.length === 0) return null;
-
-  const handleSelect = (index) => {
-    setSelectedDateIndex(index);
-    setSelectedDate(dates[index]);
-    window.scrollTo(
-      0,
-      document.body.scrollHeight || document.documentElement.scrollHeight,
-    );
-  };
+const DateDropdown = (props) => {
+  const {
+    dates,
+    selectedDate,
+    setSelectedDate,
+    selectedDateIndex,
+    setSelectedDateIndex,
+  } = props;
 
   return (
-    <Stack mb={1}>
-      <Stack.Item>
-        <Button
-          className="Changelog__Button"
-          disabled={selectedDateIndex <= 0}
-          icon="chevron-left"
-          onClick={() => handleSelect(selectedDateIndex - 1)}
-        />
-      </Stack.Item>
-      <Stack.Item>
-        <Dropdown
-          autoScroll={false}
-          options={dates}
-          onSelected={(value) => handleSelect(dates.indexOf(value))}
-          selected={selectedDate}
-          width="150px"
-        />
-      </Stack.Item>
-      <Stack.Item>
-        <Button
-          className="Changelog__Button"
-          disabled={selectedDateIndex >= dates.length - 1}
-          icon="chevron-right"
-          onClick={() => handleSelect(selectedDateIndex + 1)}
-        />
-      </Stack.Item>
-    </Stack>
+    dates.length > 0 && (
+      <Stack mb={1}>
+        <Stack.Item>
+          <Button
+            className="Changelog__Button"
+            disabled={selectedDateIndex === 0}
+            icon={'chevron-left'}
+            onClick={() => {
+              const index = selectedDateIndex - 1;
+
+              setSelectedDateIndex(index);
+              setSelectedDate(dates[index]);
+              window.scrollTo(
+                0,
+                document.body.scrollHeight ||
+                  document.documentElement.scrollHeight,
+              );
+            }}
+          />
+        </Stack.Item>
+        <Stack.Item>
+          <Dropdown
+            autoScroll={false}
+            options={dates}
+            onSelected={(value) => {
+              const index = dates.indexOf(value);
+
+              setSelectedDateIndex(index);
+              setSelectedDate(value);
+              window.scrollTo(
+                0,
+                document.body.scrollHeight ||
+                  document.documentElement.scrollHeight,
+              );
+            }}
+            selected={selectedDate}
+            width="150px"
+          />
+        </Stack.Item>
+        <Stack.Item>
+          <Button
+            className="Changelog__Button"
+            disabled={selectedDateIndex === dates.length - 1}
+            icon={'chevron-right'}
+            onClick={() => {
+              const index = selectedDateIndex + 1;
+
+              setSelectedDateIndex(index);
+              setSelectedDate(dates[index]);
+              window.scrollTo(
+                0,
+                document.body.scrollHeight ||
+                  document.documentElement.scrollHeight,
+              );
+            }}
+          />
+        </Stack.Item>
+      </Stack>
+    )
   );
 };
 
-// --- SINGLE ENTRY ---
-const ChangelogEntry = ({ author, changes, source }) => {
-  const { icon, name } = CHANGELOG_SOURCES[source] || CHANGELOG_SOURCES.tg;
+const ChangelogList = (props) => {
+  const {
+    contents,
+    bubberContents,
+    splurtContents,
+    venusContents,
+    veilbreakContents,
+  } = props;
+
+  const combinedDates = {};
+  Object.assign(
+    combinedDates,
+    typeof contents === 'object' ? contents : {},
+    typeof bubberContents === 'object' ? bubberContents : {},
+    typeof splurtContents === 'object' ? splurtContents : {},
+    typeof venusContents === 'object' ? venusContents : {},
+    typeof veilbreakContents === 'object' ? veilbreakContents : {},
+  );
+
+  if (Object.keys(combinedDates).length < 1) {
+    return <p>{contents}</p>;
+  }
+
+  return Object.keys(combinedDates)
+    .sort()
+    .reverse()
+    .map((date) => (
+      <Section key={date} title={dateformat(date, 'd mmmm yyyy', true)} pb={1}>
+        <Box ml={3}>
+          {veilbreakContents[date] && (
+            <Section mb={-2}>
+              {Object.entries(veilbreakContents[date]).map(
+                ([name, changes]) => (
+                  <VeilbreakChangelogEntry
+                    key={name}
+                    author={name}
+                    changes={changes}
+                  />
+                ),
+              )}
+            </Section>
+          )}
+          {bubberContents[date] && (
+            <Section mb={-2}>
+              {Object.entries(bubberContents[date]).map(([name, changes]) => (
+                <BubberChangelogEntry
+                  key={name}
+                  author={name}
+                  changes={changes}
+                />
+              ))}
+            </Section>
+          )}
+          {splurtContents[date] && (
+            <Section mb={-2}>
+              {Object.entries(splurtContents[date]).map(([name, changes]) => (
+                <SplurtChangelogEntry
+                  key={name}
+                  author={name}
+                  changes={changes}
+                />
+              ))}
+            </Section>
+          )}
+          {venusContents[date] && (
+            <Section mb={-2}>
+              {Object.entries(venusContents[date]).map(([name, changes]) => (
+                <VenusChangelogEntry
+                  key={name}
+                  author={name}
+                  changes={changes}
+                />
+              ))}
+            </Section>
+          )}
+          {contents[date] && (
+            <Section mt={-1}>
+              {Object.entries(contents[date]).map(([name, changes]) => (
+                <ChangelogEntry key={name} author={name} changes={changes} />
+              ))}
+            </Section>
+          )}
+        </Box>
+      </Section>
+    ));
+};
+
+const VeilbreakChangelogEntry = (props) => {
+  const { author, changes } = props;
 
   return (
     <Stack.Item mb={-1} pb={1} key={author}>
       <Box>
         <h4>
-          <Image verticalAlign="bottom" src={resolveAsset(icon)} /> {name}:{' '}
+          <Image
+            verticalAlign="bottom"
+            src={resolveAsset('veilbreak_16.png')}
+          />{' '}
           {author} changed:
         </h4>
       </Box>
       <Box ml={3} mt={-0.2}>
         <Table>
-          {changes.map((change, idx) => {
-            const type = Object.keys(change)[0];
+          {changes.map((change) => {
+            const changeType = Object.keys(change)[0];
             return (
-              <Table.Row key={idx}>
+              <Table.Row key={changeType + change[changeType]}>
                 <Table.Cell
                   className={classes([
                     'Changelog__Cell',
@@ -130,13 +231,21 @@ const ChangelogEntry = ({ author, changes, source }) => {
                   ])}
                 >
                   <Icon
-                    color={icons[type]?.color || icons.unknown.color}
-                    name={icons[type]?.icon || icons.unknown.icon}
+                    color={
+                      icons[changeType]
+                        ? icons[changeType].color
+                        : icons.unknown.color
+                    }
+                    name={
+                      icons[changeType]
+                        ? icons[changeType].icon
+                        : icons.unknown.icon
+                    }
                     verticalAlign="middle"
                   />
                 </Table.Cell>
                 <Table.Cell className="Changelog__Cell">
-                  {change[type]}
+                  {change[changeType]}
                 </Table.Cell>
               </Table.Row>
             );
@@ -147,136 +256,298 @@ const ChangelogEntry = ({ author, changes, source }) => {
   );
 };
 
-// --- LIST OF ENTRIES ---
-const ChangelogList = ({ contents }) => {
-  const combinedDates = Object.keys(contents || {}).reduce((acc, source) => {
-    Object.keys(contents[source] || {}).forEach((date) => {
-      acc[date] = acc[date] || {};
-      acc[date][source] = contents[source][date];
-    });
-    return acc;
-  }, {});
+const BubberChangelogEntry = (props) => {
+  const { author, changes } = props;
 
-  if (Object.keys(combinedDates).length < 1) {
-    return <p>No changelog data available.</p>;
-  }
-
-  return Object.keys(combinedDates)
-    .sort()
-    .reverse()
-    .map((date) => {
-      const parsed = new Date(date);
-      const formatted = isNaN(parsed)
-        ? date
-        : dateformat(parsed, 'd mmmm yyyy', true);
-
-      return (
-        <Section key={date} title={formatted} pb={1}>
-          <Box ml={3}>
-            {Object.entries(combinedDates[date]).map(([source, authors]) => (
-              <Section key={source} mb={-2}>
-                {authors ? (
-                  Object.entries(authors).map(([author, changes]) => (
-                    <ChangelogEntry
-                      key={author}
-                      author={author}
-                      changes={changes}
-                      source={source}
-                    />
-                  ))
-                ) : (
-                  <i>No entries from {source}.</i>
-                )}
-              </Section>
-            ))}
-          </Box>
-        </Section>
-      );
-    });
+  return (
+    <Stack.Item mb={-1} pb={1} key={author}>
+      <Box>
+        <h4>
+          <Image verticalAlign="bottom" src={resolveAsset('bubber_16.png')} />{' '}
+          {author} changed:
+        </h4>
+      </Box>
+      <Box ml={3} mt={-0.2}>
+        <Table>
+          {changes.map((change) => {
+            const changeType = Object.keys(change)[0];
+            return (
+              <Table.Row key={changeType + change[changeType]}>
+                <Table.Cell
+                  className={classes([
+                    'Changelog__Cell',
+                    'Changelog__Cell--Icon',
+                  ])}
+                >
+                  <Icon
+                    color={
+                      icons[changeType]
+                        ? icons[changeType].color
+                        : icons.unknown.color
+                    }
+                    name={
+                      icons[changeType]
+                        ? icons[changeType].icon
+                        : icons.unknown.icon
+                    }
+                    verticalAlign="middle"
+                  />
+                </Table.Cell>
+                <Table.Cell className="Changelog__Cell">
+                  {change[changeType]}
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
+        </Table>
+      </Box>
+    </Stack.Item>
+  );
 };
 
-// --- MAIN COMPONENT ---
-export const BubberChangelog = () => {
-  const { data, act } = useBackend();
-  const { dates = [] } = data;
+const ChangelogEntry = (props) => {
+  const { author, changes } = props;
 
-  const [contents, setContents] = useState({});
-  const [selectedDateIndex, setSelectedDateIndex] = useState(
-    dates.length ? 0 : -1,
+  return (
+    <Stack.Item mb={-1} pb={1} key={author}>
+      <Box>
+        <h4>
+          <Image verticalAlign="bottom" src={resolveAsset('tg_16.png')} />{' '}
+          {author} changed:
+        </h4>
+      </Box>
+      <Box ml={3} mt={-0.2}>
+        <Table>
+          {changes.map((change) => {
+            const changeType = Object.keys(change)[0];
+            return (
+              <Table.Row key={changeType + change[changeType]}>
+                <Table.Cell
+                  className={classes([
+                    'Changelog__Cell',
+                    'Changelog__Cell--Icon',
+                  ])}
+                >
+                  <Icon
+                    color={
+                      icons[changeType]
+                        ? icons[changeType].color
+                        : icons.unknown.color
+                    }
+                    name={
+                      icons[changeType]
+                        ? icons[changeType].icon
+                        : icons.unknown.icon
+                    }
+                    verticalAlign="middle"
+                  />
+                </Table.Cell>
+                <Table.Cell className="Changelog__Cell">
+                  {change[changeType]}
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
+        </Table>
+      </Box>
+    </Stack.Item>
   );
-  const [selectedDate, setSelectedDate] = useState(dates[0] ?? null);
+};
+
+const SplurtChangelogEntry = (props) => {
+  const { author, changes } = props;
+
+  return (
+    <Stack.Item mb={-1} pb={1} key={author}>
+      <Box>
+        <h4>
+          <Image verticalAlign="bottom" src={resolveAsset('splurt_16.png')} />{' '}
+          {author} changed:
+        </h4>
+      </Box>
+      <Box ml={3} mt={-0.2}>
+        <Table>
+          {changes.map((change) => {
+            const changeType = Object.keys(change)[0];
+            return (
+              <Table.Row key={changeType + change[changeType]}>
+                <Table.Cell
+                  className={classes([
+                    'Changelog__Cell',
+                    'Changelog__Cell--Icon',
+                  ])}
+                >
+                  <Icon
+                    color={
+                      icons[changeType]
+                        ? icons[changeType].color
+                        : icons['unknown'].color
+                    }
+                    name={
+                      icons[changeType]
+                        ? icons[changeType].icon
+                        : icons['unknown'].icon
+                    }
+                    verticalAlign="middle"
+                  />
+                </Table.Cell>
+                <Table.Cell className="Changelog__Cell">
+                  {change[changeType]}
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
+        </Table>
+      </Box>
+    </Stack.Item>
+  );
+};
+
+const VenusChangelogEntry = (props) => {
+  const { author, changes } = props;
+
+  return (
+    <Stack.Item mb={-1} pb={1} key={author}>
+      <Box>
+        <h4>
+          <Image verticalAlign="bottom" src={resolveAsset('venus_16.png')} />{' '}
+          {author} changed:
+        </h4>
+      </Box>
+      <Box ml={3} mt={-0.2}>
+        <Table>
+          {changes.map((change) => {
+            const changeType = Object.keys(change)[0];
+            return (
+              <Table.Row key={changeType + change[changeType]}>
+                <Table.Cell
+                  className={classes([
+                    'Changelog__Cell',
+                    'Changelog__Cell--Icon',
+                  ])}
+                >
+                  <Icon
+                    color={
+                      icons[changeType]
+                        ? icons[changeType].color
+                        : icons['unknown'].color
+                    }
+                    name={
+                      icons[changeType]
+                        ? icons[changeType].icon
+                        : icons['unknown'].icon
+                    }
+                    verticalAlign="middle"
+                  />
+                </Table.Cell>
+                <Table.Cell className="Changelog__Cell">
+                  {change[changeType]}
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
+        </Table>
+      </Box>
+    </Stack.Item>
+  );
+};
+
+export const BubberChangelog = (props) => {
+  const { data } = useBackend();
+  const { dates } = data;
+  const [contents, setContents] = useState('');
+  const [bubberContents, setBubberContents] = useState('');
+  const [splurtContents, setSplurtContents] = useState('');
+  const [venusContents, setVenusContents] = useState('');
+  const [veilbreakContents, setVeilbreakContents] = useState('');
+  const [selectedDate, setSelectedDate] = useState(dates[0]);
+  const [selectedDateIndex, setSelectedDateIndex] = useState(0);
 
   useEffect(() => {
-    if (!selectedDate) return;
-    setContents({});
+    setContents('Loading changelog data...');
+    setBubberContents('Loading changelog data...');
+    setSplurtContents('Loading changelog data...');
+    setVenusContents('Loading changelog data...');
+    setVeilbreakContents('Loading changelog data...');
     getData(selectedDate);
   }, [selectedDate]);
 
-  const getData = async (date, attempt = 1) => {
+  function getData(date, attemptNumber = 1) {
+    const { act } = useBackend();
     const maxAttempts = 6;
-    if (attempt > maxAttempts) {
-      setContents({
-        error: `Failed to load data after ${maxAttempts} attempts.`,
-      });
+
+    if (attemptNumber > maxAttempts) {
+      setContents(`Failed to load data after ${maxAttempts} attempts.`);
       return;
     }
 
     act('get_month', { date });
 
-    try {
-      const results = await Promise.allSettled(
-        Object.keys(CHANGELOG_SOURCES).map((source) => {
-          const file =
-            source === 'tg' ? `${date}.yml` : `${source}_${date}.yml`;
-          return fetch(resolveAsset(file));
-        }),
-      );
+    Promise.all([
+      fetch(resolveAsset(`${date}.yml`)),
+      fetch(resolveAsset(`bubber_${date}.yml`)),
+      fetch(resolveAsset(`splurt_${date}.yml`)),
+      fetch(resolveAsset(`venus_${date}.yml`)),
+      fetch(resolveAsset(`veilbreak_${date}.yml`)),
+    ]).then(async (links) => {
+      const result = await links[0].text();
+      const bubberResult = await links[1].text();
+      const splurtResult = await links[2].text();
+      const venusResult = await links[3].text();
+      const veilbreakResult = await links[4].text();
 
-      let hadRetryableErrors = false;
+      if (
+        links[0].status !== 200 &&
+        links[1].status !== 200 &&
+        links[2].status !== 200 &&
+        links[3].status !== 200 &&
+        links[4].status !== 200
+      ) {
+        const timeout = 50 + attemptNumber * 50;
 
-      await Promise.all(
-        results.map(async (res, idx) => {
-          const source = Object.keys(CHANGELOG_SOURCES)[idx];
-          if (res.status === 'fulfilled') {
-            const response = res.value;
-            if (response.ok) {
-              const text = await response.text();
-              const parsed = yaml.load(text, { schema: yaml.CORE_SCHEMA });
-
-              // Normalize into { source: { date: parsed } }
-              setContents((prev) => ({
-                ...prev,
-                [source]: {
-                  ...(prev[source] || {}),
-                  [date]: parsed || {},
-                },
-              }));
-            } else if (response.status >= 500) {
-              hadRetryableErrors = true;
-            } else {
-              setContents((prev) => ({
-                ...prev,
-                [source]: {
-                  ...(prev[source] || {}),
-                  [date]: {},
-                },
-              }));
-            }
-          } else {
-            hadRetryableErrors = true;
-          }
-        }),
-      );
-
-      if (hadRetryableErrors) {
-        const timeout = 50 + attempt * 50;
-        setTimeout(() => getData(date, attempt + 1), timeout);
+        setContents(`Loading changelog data${'.'.repeat(attemptNumber + 3)}`);
+        setBubberContents(
+          `Loading changelog data${'.'.repeat(attemptNumber + 3)}`,
+        );
+        setSplurtContents(
+          'Loading changelog data' + '.'.repeat(attemptNumber + 3),
+        );
+        setVenusContents(
+          'Loading changelog data' + '.'.repeat(attemptNumber + 3),
+        );
+        setVeilbreakContents(
+          'Loading changelog data' + '.'.repeat(attemptNumber + 3),
+        );
+        setTimeout(() => {
+          getData(date, attemptNumber + 1);
+        }, timeout);
+      } else {
+        if (links[0].status === 200) {
+          setContents(yaml.load(result, { schema: yaml.CORE_SCHEMA }));
+        }
+        if (links[1].status === 200) {
+          setBubberContents(
+            yaml.load(bubberResult, { schema: yaml.CORE_SCHEMA }),
+          );
+        }
+        if (links[2].status === 200) {
+          setSplurtContents(
+            yaml.load(splurtResult, { schema: yaml.CORE_SCHEMA }),
+          );
+        }
+        if (links[3].status === 200) {
+          setVenusContents(
+            yaml.load(venusResult, { schema: yaml.CORE_SCHEMA }),
+          );
+        }
+        if (links[4].status === 200) {
+          setVeilbreakContents(
+            yaml.load(veilbreakResult, { schema: yaml.CORE_SCHEMA }),
+          );
+        }
       }
-    } catch (err) {
-      const timeout = 50 + attempt * 50;
-      setTimeout(() => getData(date, attempt + 1), timeout);
-    }
-  };
+    });
+  }
 
   const header = (
     <Section>
@@ -289,24 +560,18 @@ export const BubberChangelog = () => {
         contributed to the game.
       </p>
       <p>
-        Veilbreak Frontier contributors can be found{' '}
+        {'Current organization members can be found '}
         <a href="https://github.com/lilfenfen/Veilbreak-Frontier/people">
           here
         </a>
-        , and recent activity{' '}
+        {', recent GitHub contributors can be found '}
         <a href="https://github.com/lilfenfen/Veilbreak-Frontier/pulse/monthly">
-          here
-        </a>
-        . Current organization members can be found{' '}
-        <a href="https://github.com/orgs/VENUS-Station/people">here</a>, recent
-        GitHub contributors{' '}
-        <a href="https://github.com/VENUS-Station/V.E.N.U.S-TG/pulse/monthly">
           here
         </a>
         .
       </p>
       <p>
-        Or join the Veilbreak Frontier discord{' '}
+        {'You can also join our discord '}
         <a href="https://discord.gg/ychmq3tZQY">here</a>!
       </p>
       <DateDropdown
@@ -329,7 +594,116 @@ export const BubberChangelog = () => {
         setSelectedDateIndex={setSelectedDateIndex}
       />
       <h2>Licenses</h2>
-      {/* You can drop your license section here */}
+      <Section title="Veilbreak Frontier">
+        <p>
+          {'All code is licensed under '}
+          <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a>.
+          {' See '}
+          <a href="https://github.com/VENUS-Station/V.E.N.U.S-TG/blob/master/LICENSE">
+            LICENSE
+          </a>{' '}
+          for more details.
+        </p>
+        <p>
+          {'All assets including icons and sound are under a '}
+          <a href="https://creativecommons.org/licenses/by-sa/3.0/">
+            Creative Commons 3.0 BY-SA license
+          </a>
+          {' unless otherwise indicated.'}
+        </p>
+      </Section>
+      <Section title="TGS">
+        <p>
+          The TGS DMAPI API is licensed as a subproject under the MIT license.
+        </p>
+        <p>
+          {' See the footer of '}
+          <a
+            href={
+              'https://github.com/tgstation/tgstation/blob/master' +
+              '/code/__DEFINES/tgs.dm'
+            }
+          >
+            code/__DEFINES/tgs.dm
+          </a>
+          {' and '}
+          <a
+            href={
+              'https://github.com/tgstation/tgstation/blob/master' +
+              '/code/modules/tgs/LICENSE'
+            }
+          >
+            code/modules/tgs/LICENSE
+          </a>
+          {' for the MIT license.'}
+        </p>
+      </Section>
+      <Section title="/tg/station 13">
+        <p>
+          {'All code after '}
+          <a
+            href={
+              'https://github.com/tgstation/tgstation/commit/' +
+              '333c566b88108de218d882840e61928a9b759d8f'
+            }
+          >
+            commit 333c566b88108de218d882840e61928a9b759d8f on 2014/31/12 at
+            4:38 PM PST
+          </a>
+          {' is licensed under '}
+          <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a>.
+        </p>
+        <p>
+          {'All code before that commit is licensed under '}
+          <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU GPL v3</a>
+          {', including tools unless their readme specifies otherwise. See '}
+          <a href="https://github.com/tgstation/tgstation/blob/master/LICENSE">
+            LICENSE
+          </a>
+          {' and '}
+          <a href="https://github.com/tgstation/tgstation/blob/master/GPLv3.txt">
+            GPLv3.txt
+          </a>
+          {' for more details.'}
+        </p>
+        <p>
+          {'All assets including icons and sound are under a '}
+          <a href="https://creativecommons.org/licenses/by-sa/3.0/">
+            Creative Commons 3.0 BY-SA license
+          </a>
+          {' unless otherwise indicated.'}
+        </p>
+      </Section>
+      <Section title="Goonstation SS13">
+        <p>
+          <b>Coders: </b>
+          Stuntwaffle, Showtime, Pantaloons, Nannek, Keelin, Exadv1, hobnob,
+          Justicefries, 0staf, sniperchance, AngriestIBM, BrianOBlivion
+        </p>
+        <p>
+          <b>Spriters: </b>
+          Supernorn, Haruhi, Stuntwaffle, Pantaloons, Rho, SynthOrange, I Said
+          No
+        </p>
+        <p>
+          Veilbreak Frontier and /tg/station 13 are thankful to the GoonStation
+          13 Development Team for its work on the game up to the
+          {' r4407 release. The changelog for changes up to r4407 can be seen '}
+          <a href="https://wiki.ss13.co/Pre-2016_Changelog#April_2010">here</a>.
+        </p>
+        <p>
+          {'Except where otherwise noted, Goon Station 13 is licensed under a '}
+          <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">
+            Creative Commons Attribution-Noncommercial-Share Alike 3.0 License
+          </a>
+          .
+        </p>
+        <p>
+          {'Rights are currently extended to '}
+          <a href="http://forums.somethingawful.com/">SomethingAwful Goons</a>
+          {' only.'}
+        </p>
+      </Section>
     </Section>
   );
 
@@ -337,7 +711,13 @@ export const BubberChangelog = () => {
     <Window title="Changelog" width={730} height={700}>
       <Window.Content scrollable>
         {header}
-        <ChangelogList contents={contents} />
+        <ChangelogList
+          contents={contents}
+          bubberContents={bubberContents}
+          splurtContents={splurtContents}
+          venusContents={venusContents}
+          veilbreakContents={veilbreakContents}
+        />
         {footer}
       </Window.Content>
     </Window>
