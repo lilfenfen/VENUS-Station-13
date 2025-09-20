@@ -674,12 +674,15 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	qdel(query_get_related_cid)
 	var/admin_rank = holder?.rank_names() || "Player"
 	var/new_player
-	var/normalized_ckey = ckeyEx(ckey)  // preserves special characters
+	var/normalized_ckey = ckeyEx(src.key)  // preserves special characters
 
 	var/datum/db_query/query_client_in_whitelist = SSdbcore.NewQuery(
-		"SELECT 1 FROM [format_table_name("whitelist")] WHERE LOWER(ckey) = LOWER(:ckey)",
+		"SELECT ckey FROM [format_table_name("whitelist")] WHERE LOWER(ckey) = LOWER(:ckey)",
 		list("ckey" = normalized_ckey)
 	)
+	if(!query_client_in_whitelist.Execute())
+		qdel(query_client_in_whitelist)
+		return
 
 /* SKYRAT EDIT - ORIGINAL:
 	var/client_is_in_db = query_client_in_db.NextRow()
@@ -715,7 +718,6 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 				return
 */
 	var/client_is_in_whitelist = query_client_in_whitelist.NextRow()
-
 	if(!client_is_in_whitelist)
 		//SKYRAT EDIT ADDITION BEGIN - PANICBUNKER
 		if (CONFIG_GET(flag/panic_bunker) && !holder && !GLOB.deadmins[ckey] && !(ckey in GLOB.bunker_passthrough))
@@ -724,7 +726,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 			//BUBBER EDIT ADDITION BEGIN - PANICBUNKER TEXT
 			//BUBBER TODO: Make the to_chat a config thing and present it to skyrat
 			var/forumurl = CONFIG_GET(string/forumurl)
-			to_chat_immediate(src, {"<span class='notice'>Hi! This server is whitelist-enabled. <br> <br> To join our community, check out our Discord! To gain full access to the game server, read the rules and open a ticket in the #get-whitelisted channel under the \"Whitelist\" category in the Discord server linked here: <a href=' [forumurl] '>[forumurl]</a></span>"})
+			to_chat_immediate(src, {"<span class='notice'>Hi! This server is whitelist-enabled. <br> <br> To join our community, check out our Discord! To gain full access to the game server, read the rules and open a ticket in the #how-to-whitelist channel under the \"getting started\" category in the Discord server linked here: <a href=' [forumurl] '>[forumurl]</a></span>"})
 			//BUBBER EDIT ADDITION END - PANICBUNKER TEXT
 			var/list/connectiontopic_a = params2list(connectiontopic)
 			var/list/panic_addr = CONFIG_GET(string/panic_server_address)
