@@ -1,4 +1,9 @@
 /// For all of the items that are really just the user's hand used in different ways, mostly (all, really) from emotes
+
+// Add Veilbreak modular items to admin spawn list
+var/static/list/veilbreak_admin_items = typecacheof(list(
+	/obj/item/voidshard
+))
 /obj/item/hand_item
 	icon = 'icons/obj/weapons/hand.dmi'
 	icon_state = "latexballoon"
