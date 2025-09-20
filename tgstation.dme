@@ -10404,4 +10404,6 @@
 #include "modular_zzvenus\code\modules\research\designs\quantum_part_designs.dm"
 #include "modular_zzvenus\code\modules\research\techweb\all_nodes.dm"
 #include "modular_zzvenus\code\modules\storyteller\storytellers\tellers\storyteller_7_action.dm"
+// Veilbreak modulars
+#include "modular_zzveilbreak\code\game\objects\items\voidshard.dm"
 // END_INCLUDE
