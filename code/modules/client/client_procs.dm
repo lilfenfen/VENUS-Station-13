@@ -674,7 +674,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	qdel(query_get_related_cid)
 	var/admin_rank = holder?.rank_names() || "Player"
 	var/new_player
-	var/normalized_ckey = ckeyEx(ckey)  // preserves special characters
+	var/normalized_ckey = ckeyEx(src.key)  // preserves special characters
 
 	var/datum/db_query/query_client_in_whitelist = SSdbcore.NewQuery(
 		"SELECT ckey FROM [format_table_name("whitelist")] WHERE LOWER(ckey) = LOWER(:ckey)",
