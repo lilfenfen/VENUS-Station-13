@@ -10406,4 +10406,6 @@
 #include "modular_zzvenus\code\modules\storyteller\storytellers\tellers\storyteller_7_action.dm"
 // Veilbreak modulars
 #include "modular_zzveilbreak\code\game\objects\items\voidshard.dm"
+
+#include "modular_zzveilbreak\code\modules\cargo\exports\veilbreak.dm" //veilbreak exports
 // END_INCLUDE

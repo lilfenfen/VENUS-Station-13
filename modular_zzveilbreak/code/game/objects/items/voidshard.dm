@@ -6,9 +6,6 @@
 	icon = 'modular_zzveilbreak/icons/item_icons/voidshard.dmi'
 	icon_state = "voidshard"
 	w_class = WEIGHT_CLASS_TINY // Small item
-	value = 1500 // Value for cargo
-	can_sold = TRUE // Sellable at cargo
-
 	light_range = 1.5 // Faint glow radius
 	light_power = 0.5 // Faint glow intensity
 	light_color = "#8a2be2" // Soft purple glow
