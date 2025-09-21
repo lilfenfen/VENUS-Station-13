@@ -69,14 +69,14 @@
 
 
 /datum/gas/oxygen
-id = GAS_O2
-specific_heat = 20
-name = "Oxygen"
-rarity = 900
-purchaseable = TRUE
-base_value = 0.2
-desc = "The gas most life forms need to be able to survive. Also an oxidizer."
-primary_color = "#0000ff"
+	id = GAS_O2
+	specific_heat = 20
+	name = "Oxygen"
+	rarity = 900
+	purchaseable = TRUE
+	base_value = 0.2
+	desc = "The gas most life forms need to be able to survive. Also an oxidizer."
+	primary_color = "#0000ff"
 
 /datum/gas/nitrogen
 	id = GAS_N2
@@ -88,28 +88,28 @@ primary_color = "#0000ff"
 	desc = "A very common gas that used to pad artificial atmospheres to habitable pressure."
 	primary_color = "#ffff00"
 
-/datum/gas/carbon_dioxide //what the fuck is this?
-id = GAS_CO2
-specific_heat = 30
-name = "Carbon Dioxide"
-dangerous = TRUE
-rarity = 700
-purchaseable = TRUE
-base_value = 0.2
-desc = "What the fuck is carbon dioxide?"
-primary_color = COLOR_GRAY
+/datum/gas/carbon_dioxide
+	id = GAS_CO2
+	specific_heat = 30
+	name = "Carbon Dioxide"
+	dangerous = TRUE
+	rarity = 700
+	purchaseable = TRUE
+	base_value = 0.2
+	desc = "What the fuck is carbon dioxide?"
+	primary_color = COLOR_GRAY
 
 /datum/gas/plasma
-id = GAS_PLASMA
-specific_heat = 200
-name = "Plasma"
-gas_overlay = "plasma"
-moles_visible = MOLES_GAS_VISIBLE
-dangerous = TRUE
-rarity = 800
-base_value = 1.5
-desc = "A flammable gas with many other curious properties. Its research is one of NT's primary objective."
-primary_color = "#ffc0cb"
+	id = GAS_PLASMA
+	specific_heat = 200
+	name = "Plasma"
+	gas_overlay = "plasma"
+	moles_visible = MOLES_GAS_VISIBLE
+	dangerous = TRUE
+	rarity = 800
+	base_value = 1.5
+	desc = "A flammable gas with many other curious properties. Its research is one of NT's primary objective."
+	primary_color = "#ffc0cb"
 
 /datum/gas/water_vapor
 	id = GAS_WATER_VAPOR
@@ -137,31 +137,31 @@ primary_color = "#ffc0cb"
 	primary_color = COLOR_TEAL
 
 /datum/gas/nitrous_oxide
-id = GAS_N2O
-specific_heat = 40
-name = "Nitrous Oxide"
-gas_overlay = "nitrous_oxide"
-moles_visible = MOLES_GAS_VISIBLE * 2
-fusion_power = 10
-dangerous = TRUE
-rarity = 600
-purchaseable = TRUE
-base_value = 1.5
-desc = "Causes drowsiness, euphoria, and eventually unconsciousness."
-primary_color = "#ffe4c4"
+	id = GAS_N2O
+	specific_heat = 40
+	name = "Nitrous Oxide"
+	gas_overlay = "nitrous_oxide"
+	moles_visible = MOLES_GAS_VISIBLE * 2
+	fusion_power = 10
+	dangerous = TRUE
+	rarity = 600
+	purchaseable = TRUE
+	base_value = 1.5
+	desc = "Causes drowsiness, euphoria, and eventually unconsciousness."
+	primary_color = "#ffe4c4"
 
 /datum/gas/nitrium
-id = GAS_NITRIUM
-specific_heat = 10
-name = "Nitrium"
-fusion_power = 7
-gas_overlay = "nitrium"
-moles_visible = MOLES_GAS_VISIBLE
-dangerous = TRUE
-rarity = 1
-base_value = 6
-desc = "An experimental performance enhancing gas. Nitrium can have amplified effects as more of it gets into your bloodstream."
-primary_color = "#a52a2a"
+	id = GAS_NITRIUM
+	specific_heat = 10
+	name = "Nitrium"
+	fusion_power = 7
+	gas_overlay = "nitrium"
+	moles_visible = MOLES_GAS_VISIBLE
+	dangerous = TRUE
+	rarity = 1
+	base_value = 6
+	desc = "An experimental performance enhancing gas. Nitrium can have amplified effects as more of it gets into your bloodstream."
+	primary_color = "#a52a2a"
 
 /datum/gas/tritium
 	id = GAS_TRITIUM
@@ -177,51 +177,52 @@ primary_color = "#a52a2a"
 	primary_color = "#32cd32"
 
 /datum/gas/bz
-id = GAS_BZ
-specific_heat = 20
-name = "BZ"
-dangerous = TRUE
-fusion_power = 8
-rarity = 400
-purchaseable = TRUE
-base_value = 1.5
-desc = "A powerful hallucinogenic nerve agent able to induce cognitive damage."
-primary_color = "#9370db"
+/datum/gas/bz
+	id = GAS_BZ
+	specific_heat = 20
+	name = "BZ"
+	dangerous = TRUE
+	fusion_power = 8
+	rarity = 400
+	purchaseable = TRUE
+	base_value = 1.5
+	desc = "A powerful hallucinogenic nerve agent able to induce cognitive damage."
+	primary_color = "#9370db"
 
 /datum/gas/pluoxium
-id = GAS_PLUOXIUM
-specific_heat = 80
-name = "Pluoxium"
-fusion_power = -10
-rarity = 200
-base_value = 2.5
-desc = "A gas that could supply even more oxygen to the bloodstream when inhaled, without being an oxidizer."
-primary_color = "#7b68ee"
+	id = GAS_PLUOXIUM
+	specific_heat = 80
+	name = "Pluoxium"
+	fusion_power = -10
+	rarity = 200
+	base_value = 2.5
+	desc = "A gas that could supply even more oxygen to the bloodstream when inhaled, without being an oxidizer."
+	primary_color = "#7b68ee"
 
 /datum/gas/miasma
-id = GAS_MIASMA
-specific_heat = 20
-name = "Miasma"
-dangerous = TRUE
-gas_overlay = "miasma"
-moles_visible = MOLES_GAS_VISIBLE * 60
-rarity = 250
-base_value = 1
-desc = "Not necessarily a gas, miasma refers to biological pollutants found in the atmosphere."
-primary_color = COLOR_OLIVE
+	id = GAS_MIASMA
+	specific_heat = 20
+	name = "Miasma"
+	dangerous = TRUE
+	gas_overlay = "miasma"
+	moles_visible = MOLES_GAS_VISIBLE * 60
+	rarity = 250
+	base_value = 1
+	desc = "Not necessarily a gas, miasma refers to biological pollutants found in the atmosphere."
+	primary_color = COLOR_OLIVE
 
 /datum/gas/freon
-id = GAS_FREON
-specific_heat = 600
-name = "Freon"
-dangerous = TRUE
-gas_overlay = "freon"
-moles_visible = MOLES_GAS_VISIBLE *30
-fusion_power = -5
-rarity = 10
-base_value = 5
-desc = "A coolant gas. Mainly used for its endothermic reaction with oxygen."
-primary_color = "#afeeee"
+	id = GAS_FREON
+	specific_heat = 600
+	name = "Freon"
+	dangerous = TRUE
+	gas_overlay = "freon"
+	moles_visible = MOLES_GAS_VISIBLE *30
+	fusion_power = -5
+	rarity = 10
+	base_value = 5
+	desc = "A coolant gas. Mainly used for its endothermic reaction with oxygen."
+	primary_color = "#afeeee"
 
 /datum/gas/hydrogen
 	id = GAS_HYDROGEN
@@ -305,6 +306,18 @@ primary_color = "#afeeee"
 	desc = "We still don't know what it does, but it sells for a lot."
 	primary_color = COLOR_MAROON
 
+/datum/gas/delirium
+	id = GAS_DELIRIUM
+	specific_heat = 400
+	dangerous = TRUE
+	name = "Delirium"
+	gas_overlay = "delirium"
+	moles_visible = MOLES_GAS_VISIBLE * 10
+	rarity = 25
+	base_value = 4
+	desc = "A gas that induces hallucinations and madness. Said to be the breath of the void itself."
+	primary_color = "#7b0f9c"
+
 /obj/effect/overlay/gas
 	icon = 'icons/effects/atmospherics.dmi'
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
@@ -317,17 +330,7 @@ primary_color = "#afeeee"
 	// Can't use the traditional loc because we are stored in nullspace, and we can't set plane before init because of the helping that SET_PLANE_EXPLICIT does IN init
 	var/plane_offset = 0
 
-/datum/gas/delirium
-id = GAS_DELIRIUM
-specific_heat = 400
-dangerous = TRUE
-name = "Delirium"
-gas_overlay = "delirium"
-moles_visible = MOLES_GAS_VISIBLE * 10
-rarity = 25
-base_value = 4
-desc = "A gas that induces hallucinations and madness. Said to be the breath of the void itself."
-primary_color = "#7b0f9c"
+
 
 /obj/effect/overlay/gas/New(state, alph, offset)
 	. = ..()

@@ -343,9 +343,11 @@
 			adjust_hallucinations(10 SECONDS)
 
 	//-- DELIRIUM --//
-	if(delirium_pp)
-		if(delirium_pp > 0.01)
-			apply_status_effect(/datum/status_effect/delirium_gas)
+	// Only use delirium_pp inside the block where it is defined
+	if(has_moles)
+		if(delirium_pp)
+			if(delirium_pp > 0.01)
+				apply_status_effect(/datum/status_effect/delirium_gas)
 
 	//-- FREON --//
 	if(freon_pp)
