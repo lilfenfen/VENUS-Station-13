@@ -189,7 +189,7 @@
 		breath = empty_breath
 
 	// Ensure gas volumes are present.
-breath.assert_gases(/datum/gas/bz, /datum/gas/carbon_dioxide, /datum/gas/freon, /datum/gas/plasma, /datum/gas/pluoxium, /datum/gas/miasma, /datum/gas/nitrous_oxide, /datum/gas/nitrium, /datum/gas/oxygen, /datum/gas/delirium)
+	breath.assert_gases(/datum/gas/bz, /datum/gas/carbon_dioxide, /datum/gas/freon, /datum/gas/plasma, /datum/gas/pluoxium, /datum/gas/miasma, /datum/gas/nitrous_oxide, /datum/gas/nitrium, /datum/gas/oxygen, /datum/gas/delirium)
 
 	/// The list of gases in the breath.
 	var/list/breath_gases = breath.gases
