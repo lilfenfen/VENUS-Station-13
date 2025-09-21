@@ -247,7 +247,7 @@
 		miasma_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/miasma][MOLES])
 		n2o_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/nitrous_oxide][MOLES])
 		nitrium_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/nitrium][MOLES])
-		var/delirium_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/delirium][MOLES])
+		delirium_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/delirium][MOLES])
 
 	// Breath has 0 moles of gas.
 	else if(can_breathe_vacuum)
