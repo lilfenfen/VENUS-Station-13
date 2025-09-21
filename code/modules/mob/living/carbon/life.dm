@@ -224,6 +224,7 @@
 	var/o2_pp = 0
 	var/plasma_pp = 0
 	var/co2_pp = 0
+	var/delirium_pp = 0
 	// Trace gases ordered alphabetically.
 	var/bz_pp = 0
 	var/freon_pp = 0
