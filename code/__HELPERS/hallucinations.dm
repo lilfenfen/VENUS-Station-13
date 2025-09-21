@@ -299,3 +299,35 @@ ADMIN_VERB(debug_hallucination_weighted_list_per_type, R_DEBUG, "Show Hallucinat
 		span_colossus("YOU CANNOT ESCAPE ME FOREVER."), \
 		span_colossus("NOTHING CAN HOLD ME."), \
 	)
+
+
+// Delirium-specific hallucinations and whispers
+GLOBAL_LIST_INIT(delirium_hallucination_table, list(
+    "You see writhing shadows in the corners of your vision.",
+    "A voice whispers: 'You are not alone.'",
+    "Reality bends and twists for a moment.",
+    "You hear laughter echoing from nowhere.",
+    "Your hands seem to move on their own.",
+    "A chill runs down your spine as something unseen brushes past you.",
+    "You hear your name spoken softly, but no one is there.",
+    "The walls seem to breathe in and out.",
+    "You feel like you're falling, but you're standing still.",
+    "A distant scream fades into silence.",
+	"One person's beginning is another's end. I wonder what your end will begin...",
+	"Time is a flat circle, or so they say. Do you feel it spinning around you?",
+	"Order is ephemeral. Chaos is the natural state of things.",
+	"Nothing shatters sanity quite like blind faith.",
+	"Your reflection blinks before you do.",
+	"The silence hums, deep and patient, like it's choosing its moment to answer",
+	"For a moment, the air is syrup-thick and breathing tastes of iron.",
+	"Your skin prickles in places you can’t reach, moving like insects beneath it.",
+	"One of the whispers here will tell you the truth, but you'll never know which",
+	"The company doesnt care if you live or die. They just want whats MINE.",
+))
+
+/mob/living/proc/apply_delirium_hallucinations()
+    // Pick a random delirium hallucination or whisper
+    var/msg = pick(GLOB.delirium_hallucination_table)
+    to_chat(src, span_warning(msg))
+    // Optionally, trigger a visual hallucination effect here
+    // Example: src.cause_hallucination(/datum/hallucination/delirium, "delirium gas")

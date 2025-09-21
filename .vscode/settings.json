@@ -25,5 +25,8 @@
 	"search.exclude": {
 		"**/node_modules": true
 	},
-	"Lua.diagnostics.enable": false
+	"Lua.diagnostics.enable": false,
+	"chat.edits2.enabled": true,
+	"inlineChat.enableV2": true,
+	"inlineChat.lineEmptyHint": false
 }

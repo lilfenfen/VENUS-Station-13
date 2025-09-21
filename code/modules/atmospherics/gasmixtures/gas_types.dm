@@ -317,6 +317,18 @@
 	// Can't use the traditional loc because we are stored in nullspace, and we can't set plane before init because of the helping that SET_PLANE_EXPLICIT does IN init
 	var/plane_offset = 0
 
+/datum/gas/delirium
+	id = GAS_DELIRIUM
+	specific_heat = 400
+	dangerous = TRUE
+	name = "Delirium"
+	gas_overlay = "delirium"
+	moles_visible = MOLES_GAS_VISIBLE * 10
+	rarity = 25
+	base_value = 4
+	desc = "A gas that induces hallucinations and madness. Said to be the breath of the void itself."
+	primary_color = "#7b0f9c"
+
 /obj/effect/overlay/gas/New(state, alph, offset)
 	. = ..()
 	icon_state = state
