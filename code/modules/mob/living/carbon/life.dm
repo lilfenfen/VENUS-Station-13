@@ -484,11 +484,6 @@
         var/bz_strength = get_status_effect_strength(/datum/status_effect/bz_gas)
         if(bz_strength > 0)
             apply_bz_hallucinations(bz_strength)
-    if(has_status_effect(/datum/status_effect/delirium_gas))
-        var/delirium_strength = get_status_effect_strength(/datum/status_effect/delirium_gas)
-        if(delirium_strength > 0)
-            apply_delirium_hallucinations(delirium_strength)
-    return
 
 /mob/living/carbon/reagent_tick(datum/reagent/chem, seconds_per_tick, times_fired)
 	. = ..()
