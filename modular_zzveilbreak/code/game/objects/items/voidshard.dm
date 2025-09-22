@@ -19,14 +19,11 @@ verb/prime_bomb()
         return
     bomb_primed = TRUE
     to_chat(usr, "<span class='warning'>You feel the voidshard vibrate ominously...")
-    spawn(100) // 5 seconds delay
+    spawn(100)
         if(src && bomb_primed)
             bomb_primed = FALSE
             // Use standard bomb explosion proc
-            if(isturf(src.loc))
-                explosion(src.loc, 4, 6, 8, 0) // Adjust values as needed
-            else
-                explosion(get_turf(src), 4, 6, 8, 0)
+            explosion(get_turf(src), 2, 4, 6, 0)
             qdel(src)
 
 // Explode if hit by anything
@@ -42,16 +39,14 @@ verb/prime_bomb()
 
 // Activate in-hand with use item action
 /obj/item/voidshard/attack_self(mob/living/user)
-    if(!bomb_primed)
+    if(bomb_primed)
+        bomb_primed = FALSE
+        to_chat(user, "<span class='notice'>You stabilize the voidshard. It stops vibrating.</span>")
+    else
         bomb_primed = TRUE
         to_chat(user, "<span class='warning'>You feel the voidshard vibrate ominously in your hand...")
         spawn(100)
             if(src && bomb_primed)
                 bomb_primed = FALSE
-                explosion(get_turf(src), 4, 6, 8, 0)
+                explosion(get_turf(src), 2, 4, 6, 0)
                 qdel(src)
-
-/obj/item/voidshard/ui_action_z(mob/user)
-    if(bomb_primed)
-        bomb_primed = FALSE
-        to_chat(user, "<span class='notice'>You stabilize the voidshard. It stops vibrating.</span>")
