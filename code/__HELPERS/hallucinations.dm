@@ -323,9 +323,12 @@ GLOBAL_LIST_INIT(delirium_hallucination_table, list(
 	"Your skin prickles in places you can’t reach, moving like insects beneath it.",
 	"One of the whispers here will tell you the truth, but you'll never know which",
 	"The company doesnt care if you live or die. They just want whats MINE.",
+	"Utter my name where you think its safe. You'll see how wide is my reach...",
+	""
 ))
 
 /mob/living/proc/apply_delirium_hallucinations()
+    if(!client) return
     var/msg = pick(GLOB.delirium_hallucination_table)
     to_chat(src, "<span class='hallucination'>[msg]</span>")
 

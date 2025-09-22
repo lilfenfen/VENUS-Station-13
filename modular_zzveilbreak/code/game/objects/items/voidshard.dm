@@ -34,7 +34,7 @@ verb/prime_bomb()
         spawn(100)
             if(src && bomb_primed)
                 bomb_primed = FALSE
-                explosion(get_turf(src), 4, 6, 8, 0)
+                explosion(get_turf(src), 2, 4, 6, 0)
                 qdel(src)
 
 // Explode if hit by a projectile (laser, bullet, etc.)
@@ -43,7 +43,7 @@ verb/prime_bomb()
         bomb_primed = TRUE
         for(var/mob/M in view(5, src))
             to_chat(M, "<span class='warning'>The voidshard vibrates violently as it's struck by a projectile!")
-        spawn(10)
+        spawn(100)
             if(src && bomb_primed)
                 bomb_primed = FALSE
                 explosion(get_turf(src), 2, 4, 6, 0)
