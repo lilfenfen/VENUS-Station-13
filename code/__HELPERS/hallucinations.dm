@@ -325,15 +325,13 @@ GLOBAL_LIST_INIT(delirium_hallucination_table, list(
 	"The company doesnt care if you live or die. They just want whats MINE.",
 ))
 
-
-
 /mob/living/proc/apply_delirium_hallucinations()
     var/msg = pick(GLOB.delirium_hallucination_table)
     to_chat(src, "<span class='hallucination'>[msg]</span>")
 
-/mob/living/proc/start_delirium_hallucination_timer(duration = 5 * SECONDS, interval = 50 * SECONDS)
+/mob/living/proc/start_delirium_hallucination_timer(duration = 30, interval = 5)
     // Triggers a delirium hallucination every [interval] seconds for [duration] seconds
-    var/end_time = world.time + duration * 1 * SECONDS
+    var/end_time = world.time + duration * 10
     while(world.time < end_time && src)
         apply_delirium_hallucinations()
-        sleep(interval * 1)
+        sleep(interval * 50)

@@ -189,7 +189,7 @@
 		breath = empty_breath
 
 	// Ensure gas volumes are present.
-	breath.assert_gases(/datum/gas/bz, /datum/gas/carbon_dioxide, /datum/gas/freon, /datum/gas/plasma, /datum/gas/pluoxium, /datum/gas/miasma, /datum/gas/nitrous_oxide, /datum/gas/nitrium, /datum/gas/oxygen, /datum/gas/delirium)
+	breath.assert_gases(/datum/gas/bz, /datum/gas/carbon_dioxide, /datum/gas/freon, /datum/gas/plasma, /datum/gas/pluoxium, /datum/gas/miasma, /datum/gas/nitrous_oxide, /datum/gas/nitrium, /datum/gas/oxygen)
 
 	/// The list of gases in the breath.
 	var/list/breath_gases = breath.gases
@@ -224,7 +224,6 @@
 	var/o2_pp = 0
 	var/plasma_pp = 0
 	var/co2_pp = 0
-	var/delirium_pp = 0
 	// Trace gases ordered alphabetically.
 	var/bz_pp = 0
 	var/freon_pp = 0
@@ -248,7 +247,6 @@
 		miasma_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/miasma][MOLES])
 		n2o_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/nitrous_oxide][MOLES])
 		nitrium_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/nitrium][MOLES])
-		delirium_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/delirium][MOLES])
 
 	// Breath has 0 moles of gas.
 	else if(can_breathe_vacuum)
@@ -342,13 +340,6 @@
 			adjust_hallucinations(20 SECONDS)
 		else if(bz_pp > 0.01)
 			adjust_hallucinations(10 SECONDS)
-
-	//-- DELIRIUM --//
-	// Only use delirium_pp inside the block where it is defined
-	if(has_moles)
-		if(delirium_pp)
-			if(delirium_pp > 0.01)
-				apply_status_effect(/datum/status_effect/delirium_gas)
 
 	//-- FREON --//
 	if(freon_pp)

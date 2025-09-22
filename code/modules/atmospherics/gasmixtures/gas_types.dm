@@ -88,7 +88,7 @@
 	desc = "A very common gas that used to pad artificial atmospheres to habitable pressure."
 	primary_color = "#ffff00"
 
-/datum/gas/carbon_dioxide
+/datum/gas/carbon_dioxide //what the fuck is this?
 	id = GAS_CO2
 	specific_heat = 30
 	name = "Carbon Dioxide"
@@ -176,7 +176,6 @@
 	desc = "A highly flammable and radioactive gas."
 	primary_color = "#32cd32"
 
-/datum/gas/bz
 /datum/gas/bz
 	id = GAS_BZ
 	specific_heat = 20
@@ -306,18 +305,6 @@
 	desc = "We still don't know what it does, but it sells for a lot."
 	primary_color = COLOR_MAROON
 
-/datum/gas/delirium
-	id = GAS_DELIRIUM
-	specific_heat = 400
-	dangerous = TRUE
-	name = "Delirium"
-	gas_overlay = "delirium"
-	moles_visible = MOLES_GAS_VISIBLE * 10
-	rarity = 25
-	base_value = 4
-	desc = "A gas that induces hallucinations and madness. Said to be the breath of the void itself."
-	primary_color = "#7b0f9c"
-
 /obj/effect/overlay/gas
 	icon = 'icons/effects/atmospherics.dmi'
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
@@ -329,8 +316,6 @@
 	// The visual offset we are "on".
 	// Can't use the traditional loc because we are stored in nullspace, and we can't set plane before init because of the helping that SET_PLANE_EXPLICIT does IN init
 	var/plane_offset = 0
-
-
 
 /obj/effect/overlay/gas/New(state, alph, offset)
 	. = ..()

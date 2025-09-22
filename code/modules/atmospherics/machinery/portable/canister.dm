@@ -298,15 +298,6 @@
 	greyscale_config = /datum/greyscale_config/canister/double_stripe
 	greyscale_colors = "#009a00#006600"
 
-// Delirium gas canister for testing and gameplay
-/obj/machinery/portable_atmospherics/canister/delirium
-	name = "Delirium canister"
-	gas_type = /datum/gas/delirium
-	filled = 1
-	icon_state = "/obj/machinery/portable_atmospherics/canister/delirium"
-	post_init_icon_state = ""
-	greyscale_config = /datum/greyscale_config/canister/double_stripe
-	greyscale_colors = "#a45cf7#f7d5d3"
 // Special canisters below here
 
 /obj/machinery/portable_atmospherics/canister/fusion_test
