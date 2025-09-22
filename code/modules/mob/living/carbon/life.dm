@@ -488,7 +488,7 @@
         var/delirium_strength = get_status_effect_strength(/datum/status_effect/delirium_gas)
         if(delirium_strength > 0)
             apply_delirium_hallucinations(delirium_strength)
-	return
+    return
 
 /mob/living/carbon/reagent_tick(datum/reagent/chem, seconds_per_tick, times_fired)
 	. = ..()
