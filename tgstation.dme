@@ -3162,6 +3162,7 @@
 #include "code\game\turfs\open\river.dm"
 #include "code\game\turfs\open\sand.dm"
 #include "code\game\turfs\open\snow.dm"
+#include "code\game\turfs\open\void_tile.dm"
 #include "code\game\turfs\open\water.dm"
 #include "code\game\turfs\open\floor\catwalk_plating.dm"
 #include "code\game\turfs\open\floor\fancy_floor.dm"
@@ -10386,6 +10387,7 @@
 //Veilbreak start
 #include "modular_zzveilbreak\code\game\objects\items\voidshard.dm"
 #include "modular_zzveilbreak\code\modules\cargo\exports\veilbreak.dm"
+#include "code/game/turfs/open/void_tile.dm"
 //veilbreak end
 #include "modular_zzvenus\code\datums\components\hotel_item.dm"
 #include "modular_zzvenus\code\datums\quirks\noitem_quirks.dm"
