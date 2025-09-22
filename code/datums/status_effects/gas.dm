@@ -93,13 +93,13 @@
     alert_type = null
 
     /// Called when the effect is applied to a mob
-    on_apply()
-        . = ..()
-        if(!.)
-            return
-        // Trigger custom delirium hallucinations and whispers
-        owner.apply_delirium_hallucinations()
-        return TRUE
+    on_apply(mob/living/carbon/M)
+        if(M && M.client)
+            M.apply_delirium_hallucinations()
+            // Optionally, start a timer for repeated hallucinations
+            spawn(50)
+                if(M)
+                    M.apply_delirium_hallucinations()
 
     tick(seconds_between_ticks)
         // Optionally, re-trigger hallucinations/whispers periodically

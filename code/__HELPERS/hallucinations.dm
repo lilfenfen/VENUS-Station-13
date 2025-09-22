@@ -324,7 +324,6 @@ GLOBAL_LIST_INIT(delirium_hallucination_table, list(
 	"One of the whispers here will tell you the truth, but you'll never know which",
 	"The company doesnt care if you live or die. They just want whats MINE.",
 	"Utter my name where you think its safe. You'll see how wide is my reach...",
-	""
 ))
 
 /mob/living/proc/apply_delirium_hallucinations()
