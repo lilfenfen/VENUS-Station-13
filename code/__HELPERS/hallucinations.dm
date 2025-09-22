@@ -329,7 +329,7 @@ GLOBAL_LIST_INIT(delirium_hallucination_table, list(
 /mob/living/proc/apply_delirium_hallucinations()
     if(!client) return
     var/msg = pick(GLOB.delirium_hallucination_table)
-    to_chat(src, "<span class='hallucination'>[msg]</span>")
+    to_chat(src, "<span class='hallucination'>[msg] (Delirium triggered)</span>")
 
 /mob/living/proc/start_delirium_hallucination_timer(duration = 30, interval = 5)
     // Triggers a delirium hallucination every [interval] seconds for [duration] seconds

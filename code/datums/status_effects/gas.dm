@@ -95,10 +95,10 @@
     /// Called when the effect is applied to a mob
     on_apply(mob/living/carbon/M)
         if(M && M.client)
-            M.apply_delirium_hallucinations()
+            M.apply_delirium_hallucinations(get_status_effect_strength(type))
     on_process(mob/living/carbon/M)
         if(M && M.client)
-            M.apply_delirium_hallucinations()
+            M.apply_delirium_hallucinations(get_status_effect_strength(type))
     on_remove(mob/living/carbon/M)
         // Optionally, clear any lingering effects
         return ..()
