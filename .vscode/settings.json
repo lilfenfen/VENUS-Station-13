@@ -28,5 +28,6 @@
 	"Lua.diagnostics.enable": false,
 	"chat.edits2.enabled": true,
 	"inlineChat.enableV2": true,
-	"inlineChat.lineEmptyHint": false
+	"inlineChat.lineEmptyHint": false,
+	"CodeGPT.apiKey": "Ollama"
 }
