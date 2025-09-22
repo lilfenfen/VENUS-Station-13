@@ -230,6 +230,7 @@
 	var/n2o_pp = 0
 	var/nitrium_pp = 0
 	var/miasma_pp = 0
+	var/delirium_pp = 0
 
 	var/can_breathe_vacuum = HAS_TRAIT(src, TRAIT_NO_BREATHLESS_DAMAGE)
 
@@ -247,6 +248,7 @@
 		miasma_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/miasma][MOLES])
 		n2o_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/nitrous_oxide][MOLES])
 		nitrium_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/nitrium][MOLES])
+		delirium_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/delirium][MOLES])
 
 	// Breath has 0 moles of gas.
 	else if(can_breathe_vacuum)
@@ -478,6 +480,14 @@
 	return . || FALSE
 
 /mob/living/carbon/proc/handle_blood(seconds_per_tick, times_fired)
+    if(has_status_effect(/datum/status_effect/bz_gas))
+        var/bz_strength = get_status_effect_strength(/datum/status_effect/bz_gas)
+        if(bz_strength > 0)
+            apply_bz_hallucinations(bz_strength)
+    if(has_status_effect(/datum/status_effect/delirium_gas))
+        var/delirium_strength = get_status_effect_strength(/datum/status_effect/delirium_gas)
+        if(delirium_strength > 0)
+            apply_delirium_hallucinations(delirium_strength)
 	return
 
 /mob/living/carbon/reagent_tick(datum/reagent/chem, seconds_per_tick, times_fired)

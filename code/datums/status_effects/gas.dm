@@ -96,17 +96,9 @@
     on_apply(mob/living/carbon/M)
         if(M && M.client)
             M.apply_delirium_hallucinations()
-            // Optionally, start a timer for repeated hallucinations
-            spawn(50)
-                if(M)
-                    M.apply_delirium_hallucinations()
-
-    tick(seconds_between_ticks)
-        // Optionally, re-trigger hallucinations/whispers periodically
-        if(prob(50))
-            owner.apply_delirium_hallucinations()
-        return ..()
-
-    on_remove()
-        // Clean up if needed
+    on_process(mob/living/carbon/M)
+        if(M && M.client)
+            M.apply_delirium_hallucinations()
+    on_remove(mob/living/carbon/M)
+        // Optionally, clear any lingering effects
         return ..()
