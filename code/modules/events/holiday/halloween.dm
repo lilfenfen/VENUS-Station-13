@@ -18,9 +18,6 @@
 
 	for(var/mob/living/basic/pet/dog/corgi/ian/Ian in GLOB.mob_living_list)
 		Ian.place_on_head(new /obj/item/bedsheet(Ian))
-	for(var/mob/living/basic/parrot/poly/bird in GLOB.mob_living_list)
-		new /mob/living/basic/parrot/poly/ghost(bird.loc)
-		qdel(bird)
 
 /datum/round_event/spooky/announce(fake)
 	priority_announce(pick("RATTLE ME BONES!","THE RIDE NEVER ENDS!", "A SKELETON POPS OUT!", "SPOOKY SCARY SKELETONS!", "CREWMEMBERS BEWARE, YOU'RE IN FOR A SCARE!") , "THE CALL IS COMING FROM INSIDE THE HOUSE")

@@ -11,7 +11,6 @@
 
 	planning_subtrees = list(
 		/datum/ai_planning_subtree/escape_captivity,
-		/datum/ai_planning_subtree/parrot_as_in_repeat, // always get a witty oneliner in when you can
 		/datum/ai_planning_subtree/pet_planning,
 		/datum/ai_planning_subtree/target_retaliate,
 		/datum/ai_planning_subtree/perch_on_target,

@@ -13955,7 +13955,6 @@
 /area/station/maintenance/department/science)
 "eMW" = (
 /obj/structure/filingcabinet/chestdrawer,
-/mob/living/basic/parrot/poly,
 /obj/machinery/incident_display/delam/directional/north,
 /obj/effect/turf_decal/tile/neutral/full,
 /turf/open/floor/iron,

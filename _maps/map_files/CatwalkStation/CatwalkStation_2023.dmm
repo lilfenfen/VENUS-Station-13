@@ -8809,7 +8809,6 @@
 /area/station/engineering/engine_smes)
 "cDg" = (
 /obj/structure/filingcabinet/chestdrawer,
-/mob/living/basic/parrot/poly,
 /obj/machinery/power/apc/auto_name/directional/east,
 /obj/structure/cable,
 /obj/machinery/button/door/directional/west{

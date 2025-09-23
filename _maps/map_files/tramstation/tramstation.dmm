@@ -33335,7 +33335,6 @@
 /turf/open/floor/grass,
 /area/station/medical/virology)
 "kHR" = (
-/mob/living/basic/parrot/poly,
 /obj/structure/filingcabinet/chestdrawer,
 /obj/effect/turf_decal/trimline/yellow/filled/line{
 	dir = 9
