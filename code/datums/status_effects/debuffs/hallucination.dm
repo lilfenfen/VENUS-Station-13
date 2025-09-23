@@ -225,7 +225,15 @@
 	return ..()
 
 /datum/status_effect/hallucination/delirious/tick(seconds_between_ticks)
-	if(owner && COOLDOWN_FINISHED(src, delirious_cooldown))
+	// First, run the base hallucination tick so normal effects still fire
+	..()
+
+	// Dead mobs shouldn't see these
+	if(!owner || owner.stat == DEAD)
+		return
+
+	// Handle our custom delirious cooldown
+	if(COOLDOWN_FINISHED(src, delirious_cooldown))
 		var/msg = pick(delirious_table)
 		to_chat(owner, "<span class='hallucination'>[msg]</span>")
 		COOLDOWN_START(src, delirious_cooldown, rand(lower_tick_interval_2, upper_tick_interval_2))
