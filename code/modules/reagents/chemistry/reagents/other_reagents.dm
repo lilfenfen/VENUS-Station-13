@@ -2676,6 +2676,7 @@
 
 /datum/reagent/delirious/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, times_fired)
 	. = ..()
+	target.adjust_delirious(5 SECONDS * REM * seconds_per_tick)
 	if(affected_mob.adjustOrganLoss(ORGAN_SLOT_BRAIN, 0.5 * REM * seconds_per_tick, required_organ_flag = affected_organ_flags))
 		return UPDATE_MOB_HEALTH
 
