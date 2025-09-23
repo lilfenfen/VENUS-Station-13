@@ -4901,6 +4901,7 @@
 #include "code\modules\lost_crew\damages\poisoned.dm"
 #include "code\modules\lost_crew\damages\post_mortem.dm"
 #include "code\modules\lost_crew\damages\projectile.dm"
+#include "code\modules\machinery\power\supermatter_crystal.dm"
 #include "code\modules\mafia\_defines.dm"
 #include "code\modules\mafia\controller.dm"
 #include "code\modules\mafia\controller_ui.dm"
