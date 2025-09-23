@@ -189,7 +189,7 @@
 		breath = empty_breath
 
 	// Ensure gas volumes are present.
-	breath.assert_gases(/datum/gas/bz, /datum/gas/carbon_dioxide, /datum/gas/freon, /datum/gas/plasma, /datum/gas/pluoxium, /datum/gas/miasma, /datum/gas/nitrous_oxide, /datum/gas/nitrium, /datum/gas/oxygen)
+	breath.assert_gases(/datum/gas/bz, /datum/gas/carbon_dioxide, /datum/gas/freon, /datum/gas/plasma, /datum/gas/pluoxium, /datum/gas/miasma, /datum/gas/nitrous_oxide, /datum/gas/nitrium, /datum/gas/oxygen, /datum/gas/delirium)
 
 	/// The list of gases in the breath.
 	var/list/breath_gases = breath.gases
@@ -218,6 +218,7 @@
 	var/n2o_para_min = 1
 	var/n2o_sleep_min = 5
 
+
 	// Partial pressures in our breath
 	// Main gases.
 	var/pluoxium_pp = 0
@@ -226,6 +227,7 @@
 	var/co2_pp = 0
 	// Trace gases ordered alphabetically.
 	var/bz_pp = 0
+	var/delirium_pp = 0
 	var/freon_pp = 0
 	var/n2o_pp = 0
 	var/nitrium_pp = 0
@@ -243,6 +245,7 @@
 		co2_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/carbon_dioxide][MOLES])
 		// Partial pressures of "trace" gases.
 		bz_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/bz][MOLES])
+		delirium_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/delirium][MOLES])
 		freon_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/freon][MOLES])
 		miasma_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/miasma][MOLES])
 		n2o_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/nitrous_oxide][MOLES])
@@ -340,6 +343,13 @@
 			adjust_hallucinations(20 SECONDS)
 		else if(bz_pp > 0.01)
 			adjust_hallucinations(10 SECONDS)
+
+	//-- DELIRIUM --//
+	if(delirium_pp)
+		if(delirium_pp > 0.1)
+			adjust_delirious(30 SECONDS)
+		else if(delirium_pp > 0.01)
+			adjust_delirious(10 SECONDS)
 
 	//-- FREON --//
 	if(freon_pp)

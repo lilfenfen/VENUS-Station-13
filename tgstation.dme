@@ -2141,7 +2141,6 @@
 #include "code\datums\status_effects\debuffs\cyborg.dm"
 #include "code\datums\status_effects\debuffs\debuffs.dm"
 #include "code\datums\status_effects\debuffs\decloning.dm"
-#include "code\datums\status_effects\debuffs\delirious.dm"
 #include "code\datums\status_effects\debuffs\dizziness.dm"
 #include "code\datums\status_effects\debuffs\dna_transformation.dm"
 #include "code\datums\status_effects\debuffs\drowsiness.dm"
@@ -10384,7 +10383,6 @@
 #include "modular_zzveilbreak\code\game\objects\items\voidshard.dm"
 #include "modular_zzveilbreak\code\modules\cargo\exports\veilbreak.dm"
 #include "code/game/turfs/open/void_tile.dm"
-#include "code\datums\status_effects\debuffs\delirious.dm"
 //veilbreak end
 #include "modular_zzvenus\code\datums\components\hotel_item.dm"
 #include "modular_zzvenus\code\datums\quirks\noitem_quirks.dm"
