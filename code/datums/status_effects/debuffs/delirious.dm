@@ -36,7 +36,7 @@ GLOBAL_LIST(delirious_table, list(
 	"You walk through the corridors of madness and into the mouth of death itself. I do believe you have finally lost your mind.",
 	"These whispers are not just your imagination. They are real, sometimes even true. You'll never know when they are.",
 	"The company does not care for your soul. All they want is whats MINE.",
-	"Do not trust the voices. They will lead you astray."
+	"Do not trust the voices. They will lead you astray.",
 ))
 
 /datum/status_effect/delirious/on_creation(mob/living/new_owner, new_duration)
