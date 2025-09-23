@@ -33,7 +33,7 @@ GLOBAL_LIST(delirious_table, list(
 	"Great works require a touch of insanity. Seems like you're on the right track.",
 	"You seek to end the madness, yet you are its herald.",
 	"Order is ephemeral. Chaos is the natural state of things. Void, the final state.",
-	"You walk through the corridors of madness and into the mouth of death itself. I do believe you have finally lost your mind.”,
+	"You walk through the corridors of madness and into the mouth of death itself. I do believe you have finally lost your mind.",
 	"These whispers are not just your imagination. They are real, sometimes even true. You'll never know when they are.",
 	"The company does not care for your soul. All they want is whats MINE.",
 	"Do not trust the voices. They will lead you astray."
