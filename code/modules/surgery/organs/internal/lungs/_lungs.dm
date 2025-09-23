@@ -1024,7 +1024,6 @@
 	var/carbon_dioxide_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/carbon_dioxide][MOLES])
 	var/bz_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/bz][MOLES])
 	var/miasma_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/miasma][MOLES])
-	var/delirium_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/delirium][MOLES])
 
 
 
