@@ -128,7 +128,7 @@ SUBSYSTEM_DEF(ticker)
 			music -= old_login_music
 		set_lobby_music(pick(music))
 	else
-		set_lobby_music("[global.config.directory]/title_music/sounds/[pick(music)]")
+		set_lobby_music("sound/music/lobby_music/[pick(music)]")
 
 	if(!GLOB.syndicate_code_phrase)
 		GLOB.syndicate_code_phrase = generate_code_phrase(return_list=TRUE)
