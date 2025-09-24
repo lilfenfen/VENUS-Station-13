@@ -1,6 +1,6 @@
 /turf/open/floor/void_tile
 	name = "Void Tile"
-	desc = "A tile made from the very fabric of space itself."
+	desc = "A tile made from the very fabric of void itself. How are you even standing on this..."
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "void_tile"
 	initial_gas_mix = VOID_ATMOS
