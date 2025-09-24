@@ -3,7 +3,7 @@
 /area/ruin/powered/miningfacility
 	name = "Abandoned Nanotrasen Mining Facility"
 	icon_state = "dk_yellow"
-	ambientsounds = list('sound/music/lobby_music/title3.ogg') //Classic vibes
+	ambientsounds = list('sound/music/lobby_music/awakening.ogg') //Classic vibes
 
 /area/ruin/powered/crashedshuttle
 	name = "Crashed Shuttle"

@@ -403,7 +403,8 @@
 
 // Default track supplied for testing and also because it's a banger
 /datum/track/default
-	song_path = 'sound/music/lobby_music/title3.ogg'
-	song_name = "Tintin on the Moon"
-	song_length = 3 MINUTES + 52 SECONDS
-	song_beat = 1 SECONDS
+	var/list/lobby_music = list(
+    "sound/music/lobby_music/title1.ogg",
+    "sound/music/lobby_music/ambient1.ogg",
+    "sound/music/lobby_music/ambient2.ogg"
+    // Add more .ogg files from sound/music/lobby_music as needed
