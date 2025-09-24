@@ -245,5 +245,5 @@
 	// Handle our custom delirious cooldown
 	if(COOLDOWN_FINISHED(src, delirious_cooldown))
 		var/msg = pick(delirious_table)
-		to_chat(owner, "<span class='hallucination'>[msg]</span>")
+		to_chat(owner, "<span class='hallucination' style='color:#8a2be2; text-shadow:0 0 8px #8a2be2; font-style:italic;'>[msg]</span>")
 		COOLDOWN_START(src, delirious_cooldown, rand(lower_tick_interval_2, upper_tick_interval_2))
