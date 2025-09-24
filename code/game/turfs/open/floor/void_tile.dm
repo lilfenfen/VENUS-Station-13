@@ -1,7 +1,8 @@
 /turf/open/floor/void_tile
 	name = "Void Tile"
 	desc = "A tile made from the very fabric of space itself."
-	icon = 'icons/turf/floors/void_tile.dmi'
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "void_tile"
 	initial_gas_mix = VOID_ATMOS
 	planetary_atmos = TRUE
 	light_range = 2.0 //slightly less range than lava
