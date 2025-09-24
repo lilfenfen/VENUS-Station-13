@@ -10379,11 +10379,8 @@
 #include "modular_zzplurt\code\modules\vending\vending.dm"
 #include "modular_zzplurt\code\modules\wiremod\core\integrated_circuit.dm"
 #include "modular_zzplurt\maps\offstation\seedvault.dm"
-//Veilbreak start
 #include "modular_zzveilbreak\code\game\objects\items\voidshard.dm"
 #include "modular_zzveilbreak\code\modules\cargo\exports\veilbreak.dm"
-#include "code/game/turfs/open/void_tile.dm"
-//veilbreak end
 #include "modular_zzvenus\code\datums\components\hotel_item.dm"
 #include "modular_zzvenus\code\datums\quirks\noitem_quirks.dm"
 #include "modular_zzvenus\code\datums\shuttles\arrival.dm"

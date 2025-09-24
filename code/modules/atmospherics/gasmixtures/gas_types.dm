@@ -310,7 +310,7 @@
 	specific_heat = 400
 	dangerous = TRUE
 	name = "Delirium"
-	gas_overlay = "delirium"
+	gas_overlay = "delirium_2"
 	moles_visible = MOLES_GAS_VISIBLE * 10
 	rarity = 1
 	fusion_power = 25
