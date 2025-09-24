@@ -215,7 +215,17 @@
 		"You walk through the corridors of madness and into the mouth of death itself. I do believe you have finally lost your mind.",
 		"These whispers are not just your imagination. They are real, sometimes even true. You'll never know when they are.",
 		"The company does not care for your soul. All they want is whats MINE.",
-		"Do not trust the voices. They will lead you astray."
+		"Do not trust the voices. They will lead you astray.",
+		"Existence as you perceive it is but a shade of the infinite realm.",
+		"I was always just watching, but now? Not so much.",
+		"Everywhere you can go, I can be waiting.",
+		"Your final gasp will serve as bellows to the whirlwinds of destruction.",
+		"Why you? Why not you?",
+		"The void minds not your existence, for the void minds not.",
+		"You could merely hope to amount even to nothing.",
+		"You cannot escape that which is all around you.",
+		"There is nothing for you here. There is nothing for you anywhere.",
+		"Was this part of my plan, you ask? All that occurs is well accounted for."
 	)
 	COOLDOWN_DECLARE(delirious_cooldown)
 

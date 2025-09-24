@@ -2671,7 +2671,7 @@
 	description = "Delirium-inducing chemical. Causes temporary brain damage."
 	color = "#FF00FF"
 	taste_description = "You feel as if your senses stop working as long as they are intact with delirium."
-	metabolization_rate = 0.2 * REAGENTS_METABOLISM
+	metabolization_rate = 1 * REAGENTS_METABOLISM
 	chemical_flags = REAGENT_NO_RANDOM_RECIPE
 
 /datum/reagent/delirious/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, times_fired)
