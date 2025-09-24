@@ -408,3 +408,8 @@
     "sound/music/lobby_music/ambient1.ogg",
     "sound/music/lobby_music/ambient2.ogg"
     // Add more .ogg files from sound/music/lobby_music as needed
+)
+	song_path = pick(lobby_music)
+	song_name = "Tintin on the Moon"
+	song_length = 3 MINUTES + 52 SECONDS
+	song_beat = 1 SECONDS
