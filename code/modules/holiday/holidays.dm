@@ -1082,18 +1082,17 @@ GLOBAL_LIST_INIT(holiday_mail, list())
 	message_admins("The accepted dates for [path] in the input range [min_year]-[max_year]/[min_month]-[max_month]/1-[max_day] are [deets.Join("\n")]")
 
 var/list/roundend_music = list(
-    "config/reboot_themes/theme1.ogg",
-    "config/reboot_themes/theme2.ogg",
-    "config/reboot_themes/theme3.ogg",
-    "config/reboot_themes/theme4.ogg",
-    "config/reboot_themes/theme5.ogg",
-    "config/reboot_themes/theme6.ogg",
-    "config/reboot_themes/theme7.ogg",
-    "config/reboot_themes/theme8.ogg",
-    "config/reboot_themes/theme9.ogg",
-    "config/reboot_themes/theme10.ogg",
-    "config/reboot_themes/theme11.ogg",
-    "config/reboot_themes/theme12.ogg",
-    "config/reboot_themes/theme13.ogg",
-    "config/reboot_themes/theme14.ogg"
+    "config/reboot_themes/afraidofamericans.ogg",
+    "config/reboot_themes/aghs-05.ogg",
+    "config/reboot_themes/aghs-boss.ogg",
+    "config/reboot_themes/anyoneheard.ogg",
+    "config/reboot_themes/apcdestroyed.ogg",
+    "config/reboot_themes/bully2.ogg",
+    "config/reboot_themes/charlie jumpscare.ogg",
+    "config/reboot_themes/fart.ogg",
+    "config/reboot_themes/its_only_game.ogg",
+    "config/reboot_themes/sublime.ogg",
+    "config/reboot_themes/hello.ogg",
+    "config/reboot_themes/scrunglartiy.ogg",
+    "config/reboot_themes/yeehaw.ogg"
 )

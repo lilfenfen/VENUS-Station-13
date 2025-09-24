@@ -401,15 +401,12 @@
 	/// Used to determine time between effects when played
 	var/song_beat = 0
 
+
+
+
 // Default track supplied for testing and also because it's a banger
 /datum/track/default
-	var/list/lobby_music = list(
-    "sound/music/lobby_music/title1.ogg",
-    "sound/music/lobby_music/ambient1.ogg",
-    "sound/music/lobby_music/ambient2.ogg"
-    // Add more .ogg files from sound/music/lobby_music as needed
-)
-	song_path = pick(lobby_music)
+	song_path = 'sound/music/lobby_music/awakening.ogg'
 	song_name = "Tintin on the Moon"
 	song_length = 3 MINUTES + 52 SECONDS
 	song_beat = 1 SECONDS

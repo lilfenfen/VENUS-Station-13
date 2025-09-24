@@ -209,8 +209,7 @@ GLOBAL_LIST_INIT(ambience_assoc,list(
 ))
 
 var/list/lobby_music = list(
-    "sound/music/lobby_music/title1.ogg",
-    "sound/music/lobby_music/ambient1.ogg",
-    "sound/music/lobby_music/ambient2.ogg"
+    "/sound/music/lobby_music/awakening.ogg",
+	"/sound/music/lobby_music/Delirium Poe.ogg"
     // Add more .ogg files from sound/music/lobby_music as needed
 )
