@@ -1,7 +1,7 @@
-/turf/open/void_tile
+/turf/open/floor/void_tile
 	name = "Void Tile"
 	desc = "A tile made from the very fabric of space itself."
-	icon = 'icons/turf/floors/glass.dmi'
+	icon = 'icons/turf/floors/void_tile.dmi'
 	base_icon_state = "glass"
 	initial_gas_mix = VOID_ATMOS
 	planetary_atmos = TRUE
