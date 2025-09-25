@@ -314,7 +314,7 @@
 	moles_visible = MOLES_GAS_VISIBLE * 10
 	rarity = 1
 	fusion_power = 25
-	base_value = 20
+	base_value = 5
 	desc = "A gas that induces hallucinations and madness. Said to be the breath of the void itself."
 	primary_color = "#7b0f9c"
 
