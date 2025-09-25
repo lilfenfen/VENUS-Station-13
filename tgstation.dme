@@ -10402,4 +10402,5 @@
 #include "modular_zzvenus\code\modules\research\designs\quantum_part_designs.dm"
 #include "modular_zzvenus\code\modules\research\techweb\all_nodes.dm"
 #include "modular_zzvenus\code\modules\storyteller\storytellers\tellers\storyteller_7_action.dm"
+#include "code\__defines\~veilbreak_defines\global_veilbreak_lists.dm"
 // END_INCLUDE

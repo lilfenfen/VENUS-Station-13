@@ -307,7 +307,7 @@
 
 /datum/gas/delirium
 	id = GAS_DELIRIUM
-	specific_heat = 400
+	specific_heat = 4000
 	dangerous = TRUE
 	name = "Delirium"
 	gas_overlay = "delirium_2"

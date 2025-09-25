@@ -1243,16 +1243,19 @@
     var/new_heat_capacity = air.heat_capacity()
     if(new_heat_capacity > MINIMUM_HEAT_CAPACITY)
         air.temperature = (temperature * old_heat_capacity + energy_released) / new_heat_capacity
-
+        air.temperature = TCMB
     // Fire visuals
     var/turf/open/location = holder
     if(istype(location))
         temperature = air.temperature
         if(temperature > FIRE_DELIRIUM_MINTEMP)
             location.hotspot_expose(temperature, CELL_VOLUME)
+            visible_hallucination_pulse(location, 9, 30 SECONDS, null, GLOB.delirious_table)
 
-    return total_burned ? REACTING : NO_REACTION
-
+    if(total_burned)
+        return REACTING
+    else
+        return NO_REACTION
 
 
 

@@ -188,45 +188,6 @@
 	processing_speed = STATUS_EFFECT_NORMAL_PROCESS
 	var/lower_tick_interval_2 = 10 SECONDS
 	var/upper_tick_interval_2 = 40 SECONDS
-	var/delirious_table = list(
-		"You feel delirious. Reality bends and whispers surround you.",
-		"Your vision blurs and shifts, making it hard to focus.",
-		"You hear faint, unsettling whispers that seem to come from nowhere.",
-		"The world around you seems to warp and twist in impossible ways.",
-		"You feel a creeping sense of paranoia, as if something is watching you.",
-		"Colors seem unnaturally vibrant, almost overwhelming your senses.",
-		"You struggle to keep your thoughts straight as reality feels fluid.",
-		"Shadows in the corners of your vision seem to move on their own.",
-		"You feel disconnected from your own body, as if you're floating outside yourself.",
-		"Time seems to stretch and compress unpredictably.",
-		"You feel a strange compulsion to laugh or cry without reason.",
-		"The ceiling bends lower as if it wants to hear your thoughts.",
-		"A whisper circles your ears, syllables backwards, like language unraveling.",
-		"The silence hums, deep and patient, like it’s choosing its moment to answer.",
-		"Your skin prickles in places you can’t reach, moving like insects beneath it.",
-		"The world stutters, skipping like a broken reel of film; you’re unsure what frame you belong in.",
-		"One person's beginning is another's end. I wonder what your end will begin...",
-		"New paths lead to new nightmares.",
-		"Are you being led into a trap?",
-		"Can you feel it? Despair, thick as cloth.",
-		"Great works require a touch of insanity. Seems like you're on the right track.",
-		"You seek to end the madness, yet you are its herald.",
-		"Order is ephemeral. Chaos is the natural state of things. Void, the final state.",
-		"You walk through the corridors of madness and into the mouth of death itself. I do believe you have finally lost your mind.",
-		"These whispers are not just your imagination. They are real, sometimes even true. You'll never know when they are.",
-		"The company does not care for your soul. All they want is whats MINE.",
-		"Do not trust the voices. They will lead you astray.",
-		"Existence as you perceive it is but a shade of the infinite realm.",
-		"I was always just watching, but now? Not so much.",
-		"Everywhere you can go, I can be waiting.",
-		"Your final gasp will serve as bellows to the whirlwinds of destruction.",
-		"Why you? Why not you?",
-		"The void minds not your existence, for the void minds not.",
-		"You could merely hope to amount even to nothing.",
-		"You cannot escape that which is all around you.",
-		"There is nothing for you here. There is nothing for you anywhere.",
-		"Was this part of my plan, you ask? All that occurs is well accounted for."
-	)
 	COOLDOWN_DECLARE(delirious_cooldown)
 
 /datum/status_effect/hallucination/delirious/on_creation(mob/living/new_owner, new_duration)
@@ -244,6 +205,6 @@
 
 	// Handle our custom delirious cooldown
 	if(COOLDOWN_FINISHED(src, delirious_cooldown))
-		var/msg = pick(delirious_table)
+		var/msg = pick(GLOB.delirious_table)
 		to_chat(owner, "<span class='hallucination' style='color:#8a2be2; text-shadow:0 0 8px #8a2be2; font-style:italic;'>[msg]</span>")
 		COOLDOWN_START(src, delirious_cooldown, rand(lower_tick_interval_2, upper_tick_interval_2))

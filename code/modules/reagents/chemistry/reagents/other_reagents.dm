@@ -2677,7 +2677,7 @@
 /datum/reagent/delirious/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, times_fired)
 	. = ..()
 	affected_mob.adjust_delirious(5 SECONDS * REM * seconds_per_tick)
-	if(affected_mob.adjustOrganLoss(ORGAN_SLOT_BRAIN, 0.01 * REM * seconds_per_tick, required_organ_flag = affected_organ_flags))
+	if(affected_mob.adjustOrganLoss(ORGAN_SLOT_BRAIN, 0.1 * REM * seconds_per_tick, required_organ_flag = affected_organ_flags))
 		return UPDATE_MOB_HEALTH
 
 /datum/reagent/pax/peaceborg
