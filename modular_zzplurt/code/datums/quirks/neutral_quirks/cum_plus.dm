@@ -1,7 +1,7 @@
 #define CUMPLUS_MULT_GLOBAL 1.75
-#define CUMPLUS_MULT_TESTI 2
-#define CUMPLUS_MULT_VAGI 2
-#define CUMPLUS_MULT_BOOBI 2
+#define CUMPLUS_MULT_TESTI 4
+#define CUMPLUS_MULT_VAGI 4
+#define CUMPLUS_MULT_BOOBI 4
 
 /datum/quirk/cum_plus
 	name = "Extra-Productive Genitals"

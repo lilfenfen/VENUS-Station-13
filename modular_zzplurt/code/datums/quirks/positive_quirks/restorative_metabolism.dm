@@ -1,13 +1,13 @@
-#define RESTMETA_BRUTE_THRESHOLD 40
+#define RESTMETA_BRUTE_THRESHOLD 150
 #define RESTMETA_BRUTE_AMOUNT -0.12
-#define RESTMETA_BURN_THRESHOLD 40
+#define RESTMETA_BURN_THRESHOLD 150
 #define RESTMETA_BURN_AMOUNT -0.1
-#define RESTMETA_TOX_THRESHOLD 20
+#define RESTMETA_TOX_THRESHOLD 150
 #define RESTMETA_TOX_AMOUNT -0.08
 
 /datum/quirk/restorative_metabolism
 	name = "Restorative Metabolism"
-	desc = "Your body possesses a differentiated reconstructive ability, allowing you to slowly recover from light to moderate injuries. Critical injuries, wounds, and genetic damage will still require medical attention."
+	desc = "Your body possesses a differentiated reconstructive ability, allowing you to slowly recover from injuries. Critical injuries, wounds, and genetic damage will still require medical attention."
 	value = 8
 	quirk_flags = QUIRK_PROCESSES
 	gain_text = span_notice("You feel a surge of reconstructive vitality coursing through your body...")
