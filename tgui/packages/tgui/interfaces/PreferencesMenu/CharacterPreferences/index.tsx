@@ -141,8 +141,8 @@ export function CharacterPreferenceWindow(props) {
           {!data.content_unlocked && (
             <Stack.Item grow align="center" mb={-1}>
               <NoticeBox color="grey">
-                <a href="https://ko-fi.com/venus_station/tiers">
-                  Become a VENUS Member to unlock more character slots and other
+                <a href="https://remindthefen.weneed.a.donation.link">
+                  Become a Member to unlock more character slots and other
                   members-only benefits!
                 </a>
               </NoticeBox>

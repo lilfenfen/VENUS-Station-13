@@ -234,3 +234,11 @@ GLOBAL_LIST_INIT(sm_gas_behavior, init_sm_gas())
 	heat_modifier = 14
 	power_transmission = -0.5
 	heat_power_generation = 1
+
+/datum/sm_gas/delirium
+	gas_path = /datum/gas/delirium
+	heat_modifier = 7
+	power_transmission = 0.6
+	heat_power_generation = 11
+	powerloss_inhibition = 1.4
+	desc = "Best fuel void there is. Needs slightly higher temperatures to be effective, but also needs extra cooling to keep it manageable."

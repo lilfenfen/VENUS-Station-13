@@ -177,3 +177,34 @@
 		src.lower_tick_interval = new_duration * 0.2
 		src.upper_tick_interval = new_duration
 	return ..()
+
+
+// delirious effect
+/datum/status_effect/hallucination/delirious
+	id = "delirious"
+	tick_interval = 2 SECONDS
+	alert_type = null
+	remove_on_fullheal = TRUE
+	processing_speed = STATUS_EFFECT_NORMAL_PROCESS
+	var/lower_tick_interval_2 = 10 SECONDS
+	var/upper_tick_interval_2 = 40 SECONDS
+	COOLDOWN_DECLARE(delirious_cooldown)
+
+/datum/status_effect/hallucination/delirious/on_creation(mob/living/new_owner, new_duration)
+	if(isnum(new_duration))
+		src.duration = new_duration
+	return ..()
+
+/datum/status_effect/hallucination/delirious/tick(seconds_between_ticks)
+	// First, run the base hallucination tick so normal effects still fire
+	..()
+
+	// Dead mobs shouldn't see these
+	if(!owner || owner.stat == DEAD)
+		return
+
+	// Handle our custom delirious cooldown
+	if(COOLDOWN_FINISHED(src, delirious_cooldown))
+		var/msg = pick(GLOB.delirious_table)
+		to_chat(owner, "<span class='hallucination' style='color:#8a2be2; text-shadow:0 0 8px #8a2be2; font-style:italic;'>[msg]</span>")
+		COOLDOWN_START(src, delirious_cooldown, rand(lower_tick_interval_2, upper_tick_interval_2))

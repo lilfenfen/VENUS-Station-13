@@ -200,3 +200,9 @@
 #define adjust_static_vision_up_to(duration, up_to) adjust_timed_status_effect(duration, /datum/status_effect/static_vision, up_to)
 #define set_static_vision(duration) set_timed_status_effect(duration, /datum/status_effect/static_vision)
 #define set_static_vision_if_lower(duration) set_timed_status_effect(duration, /datum/status_effect/static_vision, TRUE)
+
+//veilbreak additions
+#define adjust_delirious(duration) adjust_timed_status_effect(duration, /datum/status_effect/hallucination/delirious)
+#define adjust_delirious_up_to(duration, up_to) adjust_timed_status_effect(duration, /datum/status_effect/hallucination/delirious, up_to)
+#define set_delirious(duration) set_timed_status_effect(duration, /datum/status_effect/hallucination/delirious)
+#define set_delirious_if_lower(duration) set_timed_status_effect(duration, /datum/status_effect/hallucination/delirious, TRUE)

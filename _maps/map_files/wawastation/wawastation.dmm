@@ -40168,7 +40168,6 @@
 /turf/open/floor/iron,
 /area/station/commons/storage/primary)
 "nSN" = (
-/mob/living/basic/parrot/poly,
 /obj/structure/filingcabinet/chestdrawer,
 /obj/effect/turf_decal/trimline/yellow/filled/line{
 	dir = 9

@@ -16,7 +16,6 @@
 	expected_types += subtypesof(/obj/item/stamp/head)
 	expected_types += subtypesof(/obj/machinery/modular_computer/preset/cargochat)
 
-	expected_types += /mob/living/basic/parrot/poly
 	expected_types += /mob/living/basic/pet/dog/corgi/ian
 	expected_types += /mob/living/carbon/human/species/monkey/punpun
 	expected_types += /obj/machinery/computer/communications

@@ -151,6 +151,7 @@
 	if(suffers_miasma)
 		add_gas_reaction(/datum/gas/miasma, while_present = PROC_REF(too_much_miasma), on_loss = PROC_REF(safe_miasma))
 	add_gas_reaction(/datum/gas/nitrous_oxide, while_present = PROC_REF(too_much_n2o), on_loss = PROC_REF(safe_n2o))
+	add_gas_reaction(/datum/gas/delirium, while_present = PROC_REF(too_much_delirium))
 	add_gas_reaction(/datum/gas/nitrium, while_present = PROC_REF(too_much_nitrium))
 	add_gas_reaction(/datum/gas/tritium, while_present = PROC_REF(too_much_tritium))
 	add_gas_reaction(/datum/gas/zauker, while_present = PROC_REF(too_much_zauker))
@@ -383,6 +384,11 @@
 		breather.reagents.add_reagent(/datum/reagent/bz_metabolites, clamp(bz_pp, 1, 5))
 	if(bz_pp > BZ_brain_damage_min && prob(33))
 		breather.adjustOrganLoss(ORGAN_SLOT_BRAIN, 3, 150, ORGAN_ORGANIC)
+
+// Too much delirium gas, time to get delirious hallucinations
+/obj/item/organ/lungs/proc/too_much_delirium(mob/living/carbon/breather, datum/gas_mixture/breath, delirium_pp, old_delirium_pp)
+	if(delirium_pp > 1)
+		breather.reagents.add_reagent(/datum/reagent/delirious, clamp(delirium_pp, 1, 5))
 
 /// Breathing in refridgerator coolent, shit's caustic
 /obj/item/organ/lungs/proc/too_much_freon(mob/living/carbon/breather, datum/gas_mixture/breath, freon_pp, old_freon_pp)
@@ -1009,6 +1015,7 @@
 		/datum/gas/nitrogen,
 		/datum/gas/bz,
 		/datum/gas/miasma,
+		/datum/gas/delirium,
 	)
 
 	var/oxygen_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/oxygen][MOLES])
@@ -1017,6 +1024,8 @@
 	var/carbon_dioxide_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/carbon_dioxide][MOLES])
 	var/bz_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/bz][MOLES])
 	var/miasma_pp = breath.get_breath_partial_pressure(breath_gases[/datum/gas/miasma][MOLES])
+
+
 
 	safe_oxygen_min = max(0, oxygen_pp - GAS_TOLERANCE)
 	/* BUBBERSTATION CHANGE START: ALLOWS ASHWALKERS TO BREATHE ON STATION

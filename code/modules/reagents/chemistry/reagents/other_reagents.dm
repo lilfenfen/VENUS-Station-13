@@ -2666,6 +2666,20 @@
 	var/datum/antagonist/changeling/changeling = IS_CHANGELING(target)
 	changeling?.adjust_chemicals(-4 * REM * seconds_per_tick) //BUBBER EDIT - BZ-BUFF-VS-LING - ORIGINAL: changeling?.adjust_chemicals(-2 * REM * seconds_per_tick)
 
+/datum/reagent/delirious
+	name = "Delirious"
+	description = "Delirium-inducing chemical. Causes temporary brain damage."
+	color = "#FF00FF"
+	taste_description = "You feel as if your senses stop working as long as they are intact with delirium."
+	metabolization_rate = 1 * REAGENTS_METABOLISM
+	chemical_flags = REAGENT_NO_RANDOM_RECIPE
+
+/datum/reagent/delirious/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, times_fired)
+	. = ..()
+	affected_mob.adjust_delirious(5 SECONDS * REM * seconds_per_tick)
+	if(affected_mob.adjustOrganLoss(ORGAN_SLOT_BRAIN, 0.1 * REM * seconds_per_tick, required_organ_flag = affected_organ_flags))
+		return UPDATE_MOB_HEALTH
+
 /datum/reagent/pax/peaceborg
 	name = "Synthpax"
 	description = "A colorless liquid that suppresses violence in its subjects. Cheaper to synthesize than normal Pax, but wears off faster."

@@ -297,7 +297,6 @@ GLOBAL_LIST_INIT(holiday_mail, list())
 /datum/holiday/april_fools/celebrate()
 	. = ..()
 	SSjob.set_overflow_role(/datum/job/clown)
-	SSticker.set_lobby_music('sound/music/lobby_music/clown.ogg', override = TRUE)
 	for(var/i in GLOB.new_player_list)
 		var/mob/dead/new_player/P = i
 		if(P.client)
@@ -1081,3 +1080,19 @@ GLOBAL_LIST_INIT(holiday_mail, list())
 /proc/print_holiday(datum/holiday/path, min_month, max_month, min_year, max_year, max_day)
 	var/list/deets = poll_holiday(path, min_month, max_month, min_year, max_year, max_day)
 	message_admins("The accepted dates for [path] in the input range [min_year]-[max_year]/[min_month]-[max_month]/1-[max_day] are [deets.Join("\n")]")
+
+var/list/roundend_music = list(
+    "config/reboot_themes/afraidofamericans.ogg",
+    "config/reboot_themes/aghs-05.ogg",
+    "config/reboot_themes/aghs-boss.ogg",
+    "config/reboot_themes/anyoneheard.ogg",
+    "config/reboot_themes/apcdestroyed.ogg",
+    "config/reboot_themes/bully2.ogg",
+    "config/reboot_themes/charlie jumpscare.ogg",
+    "config/reboot_themes/fart.ogg",
+    "config/reboot_themes/its_only_game.ogg",
+    "config/reboot_themes/sublime.ogg",
+    "config/reboot_themes/hello.ogg",
+    "config/reboot_themes/scrunglartiy.ogg",
+    "config/reboot_themes/yeehaw.ogg"
+)

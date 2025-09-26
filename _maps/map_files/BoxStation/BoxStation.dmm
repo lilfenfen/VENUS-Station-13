@@ -30247,7 +30247,6 @@
 /obj/machinery/power/apc/auto_name/directional/east,
 /obj/structure/cable,
 /obj/structure/filingcabinet/chestdrawer,
-/mob/living/basic/parrot/poly,
 /obj/effect/turf_decal/tile/yellow/half{
 	dir = 1
 	},

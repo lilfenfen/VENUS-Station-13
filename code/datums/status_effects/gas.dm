@@ -85,3 +85,9 @@
 	var/mob/living/carbon/human/human_owner = owner
 	human_owner.remove_movespeed_modifier(/datum/movespeed_modifier/reagent/hypernoblium)
 	REMOVE_TRAIT(human_owner, TRAIT_NOFIRE, TRAIT_STATUS_EFFECT(id))
+
+/datum/status_effect/delirium_gas
+    id = "delirium_gas"
+    duration = 60 SECONDS
+    status_type = STATUS_EFFECT_UNIQUE
+    alert_type = null

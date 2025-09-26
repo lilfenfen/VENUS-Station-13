@@ -27,6 +27,8 @@
 #define SPACE_TEMP_NOBLIUM GAS_HYPER_NOBLIUM + "=7500;TEMP=2.7"
 ///Xenobio slime containment turf
 #define XENOBIO_BZ GAS_BZ + "=100;TEMP=293.15"
+// Void tile turf
+#define VOID_ATMOS GAS_O2 + "=22;" + GAS_DELIRIUM + "=22;" + GAS_N2 + "=60;TEMP=293.15"
 
 //ATMOSPHERICS DEPARTMENT GAS TANK TURFS
 #define ATMOS_TANK_N2O GAS_N2O + "=6000;TEMP=293.15"
@@ -50,7 +52,6 @@
 #define ATMOS_TANK_HELIUM GAS_HELIUM + "=100000;TEMP=293.15"
 #define ATMOS_TANK_ANTINOBLIUM GAS_ANTINOBLIUM + "=100000;TEMP=293.15"
 #define ATMOS_TANK_AIRMIX GAS_O2 + "=2644;" + GAS_N2 + "=10580;TEMP=293.15"
-
 //LAVALAND
 /// what pressure you have to be under to increase the effect of equipment meant for lavaland
 #define LAVALAND_EQUIPMENT_EFFECT_PRESSURE 50

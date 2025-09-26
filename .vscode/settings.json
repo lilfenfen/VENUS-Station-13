@@ -25,5 +25,13 @@
 	"search.exclude": {
 		"**/node_modules": true
 	},
+<<<<<<< HEAD
+	"Lua.diagnostics.enable": false,
+	"chat.edits2.enabled": true,
+	"inlineChat.enableV2": true,
+	"inlineChat.lineEmptyHint": false,
+	"CodeGPT.apiKey": "Ollama"
+=======
 	"Lua.diagnostics.enable": false
+>>>>>>> 0ada0ae7a49e4184b88b3c8d520ee65673da07ca
 }

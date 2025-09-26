@@ -272,3 +272,7 @@
 // Electrolysis arguments:
 /// Supermatter power argument.
 #define ELECTROLYSIS_ARGUMENT_SUPERMATTER_POWER "electrolyzer_supermatter_power"
+
+//DELIRIUM STUFFS
+#define FIRE_DELIRIUM_MINTEMP 1000
+#define FIRE_DELIRIUM_ENERGY_RELEASED  8000

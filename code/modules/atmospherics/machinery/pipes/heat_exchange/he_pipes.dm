@@ -1,6 +1,6 @@
 /obj/machinery/atmospherics/pipe/heat_exchanging
-	var/minimum_temperature_difference = 20
-	var/thermal_conductivity = WINDOW_HEAT_TRANSFER_COEFFICIENT
+	var/minimum_temperature_difference = 0.1
+	var/thermal_conductivity = 2
 	color = "#404040"
 	buckle_lying = NO_BUCKLE_LYING
 	var/icon_temperature = T20C //stop small changes in temperature causing icon refresh

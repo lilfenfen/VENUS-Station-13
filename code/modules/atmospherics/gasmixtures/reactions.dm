@@ -1207,4 +1207,56 @@
 		air.temperature = max(air.temperature * heat_capacity / new_heat_capacity, TCMB)
 
 
+
+/datum/gas_reaction/delirium_fire
+	priority_group = PRIORITY_FIRE
+	name = "Delirium Fire"
+	id = "delirium_fire"
+	expands_hotspot = TRUE
+	desc = "The flame of the void, consuming all there is."
+
+/datum/gas_reaction/delirium_fire/init_reqs()
+	requirements = list(
+		/datum/gas/delirium = MINIMUM_MOLE_COUNT,
+		"MIN_TEMP" = FIRE_DELIRIUM_MINTEMP,
+	)
+
+/datum/gas_reaction/delirium_fire/react(datum/gas_mixture/air, datum/holder)
+    var/list/cached_gases = air.gases
+    var/old_heat_capacity = air.heat_capacity()
+    var/temperature = air.temperature
+    var/delirium_moles = cached_gases[/datum/gas/delirium][MOLES]
+    var/total_burned = 0
+
+    // Burn delirium with every other gas
+    for(var/gas_path in cached_gases)
+        if(gas_path == /datum/gas/delirium)
+            continue
+        var/list/gas = cached_gases[gas_path]
+        var/burned = min(delirium_moles / 10, gas[MOLES] / 3)
+        if(burned > 0)
+            gas[MOLES] -= burned
+            total_burned += burned
+
+    SET_REACTION_RESULTS(total_burned)
+    var/energy_released = FIRE_DELIRIUM_ENERGY_RELEASED * total_burned * 0.2
+    var/new_heat_capacity = air.heat_capacity()
+    if(new_heat_capacity > MINIMUM_HEAT_CAPACITY)
+        air.temperature = (temperature * old_heat_capacity + energy_released) / new_heat_capacity
+        air.temperature = TCMB
+    // Fire visuals
+    var/turf/open/location = holder
+    if(istype(location))
+        temperature = air.temperature
+        if(temperature > FIRE_DELIRIUM_MINTEMP)
+            location.hotspot_expose(temperature, CELL_VOLUME)
+            visible_hallucination_pulse(location, 9, 30 SECONDS, null, GLOB.delirious_table)
+
+    if(total_burned)
+        return REACTING
+    else
+        return NO_REACTION
+
+
+
 #undef SET_REACTION_RESULTS

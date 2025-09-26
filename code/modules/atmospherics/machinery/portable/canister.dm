@@ -321,6 +321,15 @@
 	greyscale_config = /datum/greyscale_config/canister/double_stripe
 	greyscale_colors = "#9fba6c#3d4680"
 
+/obj/machinery/portable_atmospherics/canister/delirium
+	name = "Delirium canister"
+	gas_type = /datum/gas/delirium
+	filled = 1
+	icon_state = "/obj/machinery/portable_atmospherics/canister/delirium"
+	post_init_icon_state = ""
+	greyscale_config = /datum/greyscale_config/canister/double_stripe
+	greyscale_colors = "#7b0f9c#3d4680"
+
 /obj/machinery/portable_atmospherics/canister/anesthetic_mix/create_gas()
 	air_contents.add_gases(/datum/gas/oxygen, /datum/gas/nitrous_oxide)
 	air_contents.gases[/datum/gas/oxygen][MOLES] = (O2_ANESTHETIC * maximum_pressure * filled) * air_contents.volume / (R_IDEAL_GAS_EQUATION * air_contents.temperature)

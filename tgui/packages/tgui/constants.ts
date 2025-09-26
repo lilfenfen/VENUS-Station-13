@@ -324,6 +324,13 @@ const GASES = [
     color: 'green',
   },
   // BUBBERSTATION CHANGE END: ADDS GOBLIN GAS
+  {
+    id: 'delirium',
+    path: '/datum/gas/delirium',
+    name: 'Delirium',
+    label: 'Delirium',
+    color: '"#7b0f9c"',
+  }
 ] as const;
 
 // Returns gas label based on gasId

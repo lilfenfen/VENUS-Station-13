@@ -97,12 +97,9 @@ GLOBAL_LIST_INIT(strippable_parrot_items, create_strippable_list(list(
 	AddElement(/datum/element/ai_retaliate)
 	AddElement(/datum/element/strippable, GLOB.strippable_parrot_items)
 	AddElement(/datum/element/simple_flying)
-	AddComponent(/datum/component/listen_and_repeat, desired_phrases = get_static_list_of_phrases(), blackboard_key = BB_PARROT_REPEAT_STRING)
 	AddComponent(/datum/component/tameable, food_types = edibles, tame_chance = 100, bonus_tame_chance = 0)
 	AddComponent(/datum/component/obeys_commands, pet_commands)
 	RegisterSignal(src, COMSIG_ATOM_ATTACKBY_SECONDARY, PROC_REF(on_attacked)) // this means we could have a peaceful interaction, like getting a cracker
-	RegisterSignal(src, COMSIG_ATOM_WAS_ATTACKED, PROC_REF(on_injured)) // this means we got hurt and it's go time
-	RegisterSignal(src, COMSIG_ANIMAL_PET, PROC_REF(on_pet))
 	RegisterSignal(src, COMSIG_KB_MOB_DROPITEM_DOWN, PROC_REF(drop_item_on_signal))
 	ADD_TRAIT(src, TRAIT_CAN_MOUNT_HUMANS, INNATE_TRAIT)
 
@@ -194,28 +191,6 @@ GLOBAL_LIST_INIT(strippable_parrot_items, create_strippable_list(list(
 
 /// Proc that handles sending the signal and returning a valid phrase to say. Will not do anything if we don't have a stat or if we're cliented.
 /// Will return either a string or null.
-/mob/living/basic/parrot/proc/get_phrase()
-	if(!isnull(client) || stat != CONSCIOUS)
-		return null
-
-	if(!COOLDOWN_FINISHED(src, forced_speech_cooldown))
-		return null
-
-	var/return_value = SEND_SIGNAL(src, COMSIG_NEEDS_NEW_PHRASE)
-	if(return_value & NO_NEW_PHRASE_AVAILABLE)
-		return null
-
-	COOLDOWN_START(src, forced_speech_cooldown, FORCED_SPEECH_COOLDOWN_DURATION)
-	return ai_controller.blackboard[BB_PARROT_REPEAT_STRING]
-
-/// Proc that listens for when a parrot is pet so we can dispatch a voice line.
-/mob/living/basic/parrot/proc/on_pet(mob/living/basic/source, mob/living/petter, modifiers)
-	SIGNAL_HANDLER
-	var/return_value = get_phrase()
-	if(isnull(return_value))
-		return
-
-	INVOKE_ASYNC(src, TYPE_PROC_REF(/atom/movable, say), message = return_value, forced = "parrot oneliner on pet")
 
 /// Proc that ascertains the type of perch we're dealing with and starts the perching process.
 /// Returns TRUE if we started perching, FALSE otherwise.
@@ -355,20 +330,6 @@ GLOBAL_LIST_INIT(strippable_parrot_items, create_strippable_list(list(
 	speech_shuffle_rate += 10
 	update_speech_blackboards()
 	return TRUE
-
-/// Handles special behavior whenever we are injured.
-/mob/living/basic/parrot/proc/on_injured(mob/living/basic/source, mob/living/attacker, attack_flags)
-	SIGNAL_HANDLER
-	if(!isnull(client) || stat == CONSCIOUS)
-		return
-
-	drop_held_item(gently = FALSE)
-
-	var/return_value = get_phrase()
-	if(isnull(return_value))
-		return
-
-	INVOKE_ASYNC(src, TYPE_PROC_REF(/atom/movable, say), message = return_value, forced = "parrot oneliner on attack")
 
 /// Handles picking up the item we're holding, done in its own proc because of a snowflake edge case we need to account for. No additional logic beyond that.
 /// Returns TRUE if we picked it up, FALSE otherwise.
