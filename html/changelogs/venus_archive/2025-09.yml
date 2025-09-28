@@ -10,3 +10,6 @@
   Goku:
   - rscadd: Added Mining Cyborg PKA variants.
   - rscadd: Vaping now produces a thick cloud of vapour when exhaled.
+2025-09-28:
+  Goku:
+  - balance: Increased the body damage coefficient of limbs to 0.2, limbs now contribute to the mob's health again.
