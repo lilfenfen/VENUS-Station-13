@@ -4,7 +4,7 @@
 
 // Weighted loot table (e.g., for random drops with chances)
 /var/list/voidling_loot_table = list(
-    /obj/item/stack/sheet/mineral/plasma = 2,
+    /obj/item/stack/sheet/bluespace_crystal = 1,
     /obj/item/stack/sheet/mineral/diamond = 1,
     /obj/item/stack/sheet/mineral/gold = 1,
     /obj/item/stack/sheet/mineral/silver = 1,
