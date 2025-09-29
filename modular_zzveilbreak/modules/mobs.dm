@@ -14,7 +14,7 @@
     melee_damage_upper = 15
     attack_verb_continuous = "slashes"
     attack_verb_simple = "slash"
-    attack_sound = 'sound/weapons/bladeslice.ogg'
+    attack_sound = 'sound/voidling_attack.ogg'
     faction = list("hostile")
     environment_smash = ENVIRONMENT_SMASH_STRUCTURES
     stat_attack = HARD_CRIT
