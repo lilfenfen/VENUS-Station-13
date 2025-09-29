@@ -12,6 +12,10 @@
     /obj/item/stack/sheet/glass = 30
 )
 
+/var/list/inai_drops = list(
+	/obj/item/voidshard = 100
+)
+
 // Function to pick loot from a table (call this in mob death proc if needed)
 /proc/pick_loot_from_table(list/loot_table)
     var/total_weight = 0

@@ -10459,6 +10459,7 @@
 #include "modular_zzveilbreak\code\modules\cargo\exports\veilbreak.dm"
 #include "modular_zzveilbreak\modules\mobs.dm"
 #include "modular_zzveilbreak\code\game\objects\items\drop_list.dm"
+#include "modular_zzveilbreak\modules\bosses\inai.dm"
 #include "modular_zzvenus\code\datums\components\hotel_item.dm"
 #include "modular_zzvenus\code\datums\quirks\noitem_quirks.dm"
 #include "modular_zzvenus\code\datums\shuttles\arrival.dm"
