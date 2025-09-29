@@ -21,7 +21,6 @@
     robust_searching = TRUE
     dodging = TRUE
     dodge_prob = 50
-    del_on_death = TRUE
 
     ai_controller = /datum/ai_controller/simple_hostile
 
@@ -32,6 +31,6 @@
             new loot(loc)
         ..()
         visible_message(span_danger("[src] And the void reclaims."))
-        // Debug message to confirm loot selection
-        if(!loot)
-            world << "Voidling at [loc] did not drop any loot."
+
+
+    del_on_death = TRUE

@@ -4,12 +4,12 @@
 
 // Weighted loot table (e.g., for random drops with chances)
 /var/list/voidling_loot_table = list(
-    /obj/item/stack/sheet/bluespace_crystal = 1,
-    /obj/item/stack/sheet/mineral/diamond = 1,
-    /obj/item/stack/sheet/mineral/gold = 1,
-    /obj/item/stack/sheet/mineral/silver = 1,
-    /obj/item/stack/sheet/plasteel = 3,
-    /obj/item/stack/sheet/glass = 3
+    /obj/item/stack/sheet/bluespace_crystal = 10,
+    /obj/item/stack/sheet/mineral/diamond = 10,
+    /obj/item/stack/sheet/mineral/gold = 10,
+    /obj/item/stack/sheet/mineral/silver = 10,
+    /obj/item/stack/sheet/plasteel = 30,
+    /obj/item/stack/sheet/glass = 30
 )
 
 // Function to pick loot from a table (call this in mob death proc if needed)
@@ -23,4 +23,3 @@
         if(rand_val <= 0)
             return item
     return null  // Fallback
-
