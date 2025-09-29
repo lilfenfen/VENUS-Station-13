@@ -22,7 +22,7 @@
     dodging = TRUE
     dodge_prob = 50
 
-    //ai_controller = /datum/ai_controller/simple_hostile
+    /datum/ai_controller/basic_controller/simple/simple_hostile
 
     death(message)
         // Spawn loot before deletion
