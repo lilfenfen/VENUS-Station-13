@@ -22,15 +22,14 @@
     dodging = TRUE
     dodge_prob = 50
 
-    /datum/ai_controller/basic_controller/simple/simple_hostile
+    /datum/ai_controller/basic_controller/alien
 
     death(message)
         // Spawn loot before deletion
         var/loot = pick_loot_from_table(voidling_loot_table)
         if(loot)
             new loot(loc)
-        ..()
         visible_message(span_danger("[src] And the void reclaims."))
-
+        ..()
 
     del_on_death = TRUE
