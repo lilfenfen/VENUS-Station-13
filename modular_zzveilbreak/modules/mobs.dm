@@ -7,8 +7,8 @@
     speak_chance = 0
     turns_per_move = 5
     speed = 1
-    maxHealth = 75
-    health = 75
+    maxHealth = 125
+    health = 125
     harm_intent_damage = 10
     melee_damage_lower = 5
     melee_damage_upper = 15
@@ -26,11 +26,12 @@
     ai_controller = /datum/ai_controller/simple_hostile
 
     death(message)
-        ..()
-        visible_message(span_danger("[src] And the void reclaims."))
+        // Spawn loot before deletion
         var/loot = pick_loot_from_table(voidling_loot_table)
         if(loot)
             new loot(loc)
-
-    /datum/ai_controller/simple_hostile/voidling
-        // Custom logic here
+        ..()
+        visible_message(span_danger("[src] And the void reclaims."))
+        // Debug message to confirm loot selection
+        if(!loot)
+            world << "Voidling at [loc] did not drop any loot."
