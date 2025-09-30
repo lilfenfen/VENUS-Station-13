@@ -26,7 +26,8 @@
 	dodge_prob = 40
 	move_to_delay = 3
 	loot = list(/obj/item/voidshard)  // Fixed drop for now; can use table later
-
+	var/datum/action/cooldown/mob_cooldown/astral_step/astral_step
+	var/datum/action/cooldown/mob_cooldown/resonant_pulse/resonant_pulse
 	// List of death messages
 	var/list/death_messages = list(
 		"This will open a dark path.",
@@ -117,7 +118,7 @@
 	button_icon_state = "resonant_pulse"
 
 /datum/action/cooldown/mob_cooldown/resonant_pulse/Activate(atom/target)
-	var/mob/living/simple_animal/hostile/megafauna/inai = owner
+	var/mob/living/simple_animal/hostile/megafauna/inai/inai = owner
 	for(var/mob/living/victim in range(6, inai))
 		var/damage = 15
 		var/damage_type = pick(BRUTE, BURN, TOX, OXY)
