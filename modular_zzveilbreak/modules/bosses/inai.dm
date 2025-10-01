@@ -55,21 +55,21 @@
 	)
 
 	var/datum/action/cooldown/mob_cooldown/astral_step/astral_step
-	var/datum/action/cooldown/mob_cooldown/resonant_wave/resonant_wave
+	var/datum/action/cooldown/mob_cooldown/inai_wave/inai_wave
 	// Abilities
 	var/astral_step_cooldown = 20 SECONDS
-	var/resonant_wave_cooldown = 35 SECONDS
+	var/inai_wave_cooldown = 35 SECONDS
 
 	Initialize()
 		. = ..()
 		astral_step = new(src)
-		resonant_wave = new(src)
+		inai_wave = new(src)
 		astral_step.Grant(src)
-		resonant_wave.Grant(src)
+		inai_wave.Grant(src)
 
 	Destroy()
 		QDEL_NULL(astral_step)
-		QDEL_NULL(resonant_wave)
+		QDEL_NULL(inai_wave)
 		return ..()
 
 	death(message)
@@ -108,15 +108,15 @@
 	inai.visible_message("<span style='color:#8a2be2; font-style:italic;'>[msg]</span>")
 	StartCooldown()
 
-// Resonant Wave ability
-/datum/action/cooldown/mob_cooldown/resonant_wave
+// Inai Wave ability
+/datum/action/cooldown/mob_cooldown/inai_wave
 	name = "Resonant Wave"
 	desc = "Channel a wave that releases random waves, damaging along paths."
 	cooldown_time = 35 SECONDS
 	button_icon = 'modular_zzveilbreak/icons/bosses/inai.dmi'
 	button_icon_state = "resonant_wave"
 
-/datum/action/cooldown/mob_cooldown/resonant_wave/Activate()
+/datum/action/cooldown/mob_cooldown/inai_wave/Activate()
 	var/mob/living/simple_animal/hostile/megafauna/inai/inai = owner
 	if(inai.stat)
 		return
@@ -142,32 +142,14 @@
 	inai.visible_message("<span style='color:#8a2be2; font-style:italic;'>[msg]</span>")
 	StartCooldown()
 
-/datum/action/cooldown/mob_cooldown/resonant_wave/proc/fire_wave(mob/living/simple_animal/hostile/megafauna/inai/inai, dir)
+/datum/action/cooldown/mob_cooldown/inai_wave/proc/fire_wave(mob/living/simple_animal/hostile/megafauna/inai/inai, dir)
 	var/turf/start_turf = get_turf(inai)
-	var/icon_state = "resonant_wave1"  // Default to north
-	switch(dir)
-		if(NORTH)
-			icon_state = "resonant_wave1"
-		if(NORTHEAST)
-			icon_state = "resonant_wave2"
-		if(EAST)
-			icon_state = "resonant_wave3"
-		if(SOUTHEAST)
-			icon_state = "resonant_wave4"
-		if(SOUTH)
-			icon_state = "resonant_wave5"
-		if(SOUTHWEST)
-			icon_state = "resonant_wave6"
-		if(WEST)
-			icon_state = "resonant_wave7"
-		if(NORTHWEST)
-			icon_state = "resonant_wave8"
 	for(var/i in 1 to 15)
 		var/turf/current_turf = get_step(start_turf, dir)
 		if(!current_turf || current_turf.density)
 			break
 		var/obj/effect/temp_visual/resonant_wave/wave = new(current_turf)
-		wave.icon_state = icon_state
+		wave.icon_state = "resonant_wave"  // Single state for all directions
 		for(var/mob/living/victim in current_turf)
 			var/damage = 15
 			var/damage_type = pick(BRUTE, BURN, TOX, OXY)
@@ -178,5 +160,5 @@
 // Temporary visual effect for the wave
 /obj/effect/temp_visual/resonant_wave
 	icon = 'modular_zzveilbreak/icons/bosses/inai.dmi'
-	icon_state = "resonant_wave1"  // Default
+	icon_state = "resonant_wave"  // Single state
 	duration = 0.4 SECONDS
