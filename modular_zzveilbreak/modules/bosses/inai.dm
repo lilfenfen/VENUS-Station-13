@@ -120,35 +120,39 @@
 	var/mob/living/simple_animal/hostile/megafauna/inai/inai = owner
 	if(inai.stat)
 		return
-	// Start channeling: stand still and don't attack for up to 6 seconds
+	// Start channeling: stand still and don't attack for up to 6 seconds, releasing waves during
 	inai.visible_message(span_danger("[inai] begins to channel a resonant wave..."))
-	// Add animation: flick an icon state for channeling
 	flick("inai_channeling", inai)
-	if(!do_after(inai, 6 SECONDS, target = inai, progress = TRUE))
-		inai.visible_message(span_warning("[inai]'s channeling is interrupted!"))
-		return
-	// After channeling, fire random waves
-	inai.visible_message(span_danger("[inai] releases a resonant wave!"))
+	var/channel_time = 12 SECONDS
+	var/wave_interval = 1.5 SECONDS  // Release a wave every 1.5 seconds
+	var/elapsed = 0
+	while(elapsed < channel_time)
+		if(!do_after(inai, wave_interval, target = inai, progress = TRUE))
+			inai.visible_message(span_warning("[inai]'s channeling is interrupted!"))
+			return
+		// Release a wave
+		var/dir = pick(GLOB.alldirs)
+		INVOKE_ASYNC(src, PROC_REF(fire_wave), inai, dir)
+		elapsed += wave_interval
+	// After channeling
+	inai.visible_message(span_danger("[inai] finishes channeling the resonant wave!"))
 	var/msg = pick(inai.pulse_messages)
 	inai.visible_message("<span style='color:#8a2be2; font-style:italic;'>[msg]</span>")
-	// Fire random waves in 3-5 random directions
-	var/num_waves = rand(3, 5)
-	var/list/directions = shuffle(GLOB.alldirs)  // Shuffle for randomness
-	for(var/i in 1 to num_waves)
-		var/dir = directions[i]
-		var/turf/start_turf = get_turf(inai)
-		for(var/j in 1 to 15)
-			var/turf/current_turf = get_step(start_turf, dir)
-			if(!current_turf || current_turf.density)
-				break
-			// Add visual effect: spawn a temporary effect or particle
-			new /obj/effect/temp_visual/resonant_wave(current_turf)
-			for(var/mob/living/victim in current_turf)
-				var/damage = 15
-				var/damage_type = pick(BRUTE, BURN, TOX, OXY)
-				victim.apply_damage(damage, damage_type)
-			start_turf = current_turf
 	StartCooldown()
+
+/datum/action/cooldown/mob_cooldown/resonant_wave/proc/fire_wave(mob/living/simple_animal/hostile/megafauna/inai/inai, dir)
+	var/turf/start_turf = get_turf(inai)
+	for(var/i in 1 to 15)
+		var/turf/current_turf = get_step(start_turf, dir)
+		if(!current_turf || current_turf.density)
+			break
+		new /obj/effect/temp_visual/resonant_wave(current_turf)
+		for(var/mob/living/victim in current_turf)
+			var/damage = 15
+			var/damage_type = pick(BRUTE, BURN, TOX, OXY)
+			victim.apply_damage(damage, damage_type)
+		start_turf = current_turf
+		sleep(0.4 SECONDS)  // Human-like speed: ~0.4 seconds per tile
 
 // Temporary visual effect for the wave
 /obj/effect/temp_visual/resonant_wave
