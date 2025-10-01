@@ -1,4 +1,3 @@
-
 /mob/living/simple_animal/hostile/megafauna/inai
 	name = "Inai"
 	desc = "Spirit of the Void, enduring the mortal indignities of the coil."
@@ -26,8 +25,7 @@
 	dodge_prob = 40
 	move_to_delay = 3
 	loot = list(/obj/item/voidshard)  // Fixed drop for now; can use table later
-	var/datum/action/cooldown/mob_cooldown/astral_step/astral_step
-	var/datum/action/cooldown/mob_cooldown/resonant_pulse/resonant_pulse
+
 	// List of death messages
 	var/list/death_messages = list(
 		"This will open a dark path.",
@@ -44,7 +42,7 @@
 		"You're already too late.",
 		"I'm everywhere and nowhere.",
 		"A merry chase you lead."
-		// Add more here
+
 	)
 
 	// List of resonant pulse messages
@@ -54,23 +52,24 @@
 		"Null efforts.",
 		"It isnt shadow that bathes me.",
 		"Void Resonance."
-		// Add more here
 	)
 
+	var/datum/action/cooldown/mob_cooldown/astral_step/astral_step
+	var/datum/action/cooldown/mob_cooldown/resonant_wave/resonant_wave
 	// Abilities
 	var/astral_step_cooldown = 20 SECONDS
-	var/resonant_pulse_cooldown = 15 SECONDS
+	var/resonant_wave_cooldown = 35 SECONDS
 
 	Initialize()
 		. = ..()
 		astral_step = new(src)
-		resonant_pulse = new(src)
+		resonant_wave = new(src)
 		astral_step.Grant(src)
-		resonant_pulse.Grant(src)
+		resonant_wave.Grant(src)
 
 	Destroy()
 		QDEL_NULL(astral_step)
-		QDEL_NULL(resonant_pulse)
+		QDEL_NULL(resonant_wave)
 		return ..()
 
 	death(message)
@@ -109,21 +108,50 @@
 	inai.visible_message("<span style='color:#8a2be2; font-style:italic;'>[msg]</span>")
 	StartCooldown()
 
-// Resonant Pulse ability
-/datum/action/cooldown/mob_cooldown/resonant_pulse
-	name = "Resonant Pulse"
-	desc = "Emit a pulse that damages all in a 6-tile radius."
-	cooldown_time = 15 SECONDS
+// Resonant Wave ability
+/datum/action/cooldown/mob_cooldown/resonant_wave
+	name = "Resonant Wave"
+	desc = "Channel a wave that releases random waves, damaging along paths."
+	cooldown_time = 35 SECONDS
 	button_icon = 'modular_zzveilbreak/icons/bosses/inai.dmi'
-	button_icon_state = "resonant_pulse"
+	button_icon_state = "resonant_wave"
 
-/datum/action/cooldown/mob_cooldown/resonant_pulse/Activate(atom/target)
+/datum/action/cooldown/mob_cooldown/resonant_wave/Activate(atom/target)
 	var/mob/living/simple_animal/hostile/megafauna/inai/inai = owner
-	for(var/mob/living/victim in range(6, inai))
-		var/damage = 15
-		var/damage_type = pick(BRUTE, BURN, TOX, OXY)
-		victim.apply_damage(damage, damage_type)
+	if(inai.stat)
+		return
+	// Start channeling: stand still and don't attack for up to 6 seconds
+	inai.visible_message(span_danger("[inai] begins to channel a resonant wave..."))
+	// Add animation: flick an icon state for channeling
+	flick("inai_channeling", inai)
+	if(!do_after(inai, 6 SECONDS, target = inai, progress = TRUE))
+		inai.visible_message(span_warning("[inai]'s channeling is interrupted!"))
+		return
+	// After channeling, fire random waves
+	inai.visible_message(span_danger("[inai] releases a resonant wave!"))
 	var/msg = pick(inai.pulse_messages)
 	inai.visible_message("<span style='color:#8a2be2; font-style:italic;'>[msg]</span>")
+	// Fire random waves in 3-5 random directions
+	var/num_waves = rand(3, 5)
+	var/list/directions = shuffle(GLOB.alldirs)  // Shuffle for randomness
+	for(var/i in 1 to num_waves)
+		var/dir = directions[i]
+		var/turf/start_turf = get_turf(inai)
+		for(var/j in 1 to 15)
+			var/turf/current_turf = get_step(start_turf, dir)
+			if(!current_turf || current_turf.density)
+				break
+			// Add visual effect: spawn a temporary effect or particle
+			new /obj/effect/temp_visual/resonant_wave(current_turf)
+			for(var/mob/living/victim in current_turf)
+				var/damage = 15
+				var/damage_type = pick(BRUTE, BURN, TOX, OXY)
+				victim.apply_damage(damage, damage_type)
+			start_turf = current_turf
 	StartCooldown()
 
+// Temporary visual effect for the wave
+/obj/effect/temp_visual/resonant_wave
+	icon = 'modular_zzveilbreak/icons/bosses/inai.dmi'  // Add this icon
+	icon_state = "resonant_wave"
+	duration = 1 SECONDS
