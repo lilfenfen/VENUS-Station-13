@@ -150,15 +150,16 @@
 			break
 		var/obj/effect/temp_visual/resonant_wave/wave = new(current_turf)
 		wave.icon_state = "resonant_wave"  // Single state for all directions
+		wave.dir = dir  // Set direction for animation
 		for(var/mob/living/victim in current_turf)
 			var/damage = 15
 			var/damage_type = pick(BRUTE, BURN, TOX, OXY)
 			victim.apply_damage(damage, damage_type)
 		start_turf = current_turf
-		sleep(0.4 SECONDS)  // Human-like speed: ~0.4 seconds per tile
+		sleep(0.8 SECONDS)  // Human-like speed: ~0.4 seconds per tile
 
 // Temporary visual effect for the wave
 /obj/effect/temp_visual/resonant_wave
 	icon = 'modular_zzveilbreak/icons/bosses/inai.dmi'
 	icon_state = "resonant_wave"  // Single state
-	duration = 0.4 SECONDS
+	duration = 0.8 SECONDS
