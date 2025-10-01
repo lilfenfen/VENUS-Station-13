@@ -124,15 +124,17 @@
 	inai.visible_message(span_danger("[inai] begins to channel a resonant wave..."))
 	flick("inai_channeling", inai)
 	var/channel_time = 12 SECONDS
-	var/wave_interval = 1.5 SECONDS  // Release a wave every 1.5 seconds
+	var/wave_interval = 1.5 SECONDS  // Release waves every 1.5 seconds
 	var/elapsed = 0
 	while(elapsed < channel_time)
 		if(!do_after(inai, wave_interval, target = inai, progress = TRUE))
 			inai.visible_message(span_warning("[inai]'s channeling is interrupted!"))
 			return
-		// Release a wave
-		var/dir = pick(GLOB.alldirs)
-		INVOKE_ASYNC(src, PROC_REF(fire_wave), inai, dir)
+		// Release 2-5 waves
+		var/num_waves = rand(2, 5)
+		for(var/w in 1 to num_waves)
+			var/dir = pick(GLOB.alldirs)
+			INVOKE_ASYNC(src, PROC_REF(fire_wave), inai, dir)
 		elapsed += wave_interval
 	// After channeling
 	inai.visible_message(span_danger("[inai] finishes channeling the resonant wave!"))
