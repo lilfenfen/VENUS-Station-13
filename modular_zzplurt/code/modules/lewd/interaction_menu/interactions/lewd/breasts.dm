@@ -41,8 +41,10 @@
 		var/milk_multiplier = 0.5
 		if(breasts.internal_fluid_maximum > 0)
 			milk_multiplier = 0.5 + (1.5 * (breasts.reagents.total_volume / breasts.internal_fluid_maximum))
-
-		var/transfer_amount = rand(1, 3 * milk_multiplier)
+		var/min_pct = 0.05
+		var/max_pct = 0.40
+		var/transfer_amount = rand(floor(breasts.reagents.total_volume * min_pct),
+								ceil(breasts.reagents.total_volume * max_pct))
 		var/datum/reagents/R = new(breasts.internal_fluid_maximum)
 		breasts.reagents.trans_to(R, transfer_amount)
 		R.trans_to(target, R.total_volume, transferred_by = user)
@@ -137,8 +139,10 @@
 			var/milk_multiplier = 0.5
 			if(breasts.internal_fluid_maximum > 0)
 				milk_multiplier = 0.5 + (1.5 * (breasts.reagents.total_volume / breasts.internal_fluid_maximum))
-
-			var/transfer_amount = rand(1, 3 * milk_multiplier)
+		var/min_pct = 0.05
+		var/max_pct = 0.40
+		var/transfer_amount = rand(floor(breasts.reagents.total_volume * min_pct),
+								ceil(breasts.reagents.total_volume * max_pct))
 			var/datum/reagents/R = new(breasts.internal_fluid_maximum)
 			breasts.reagents.trans_to(R, transfer_amount)
 			R.trans_to(liquid_container, R.total_volume, transferred_by = user)
