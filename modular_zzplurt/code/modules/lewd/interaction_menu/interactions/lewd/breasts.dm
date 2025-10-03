@@ -37,8 +37,8 @@
 	. = ..()
 	var/obj/item/organ/genital/breasts/breasts = user.get_organ_slot(ORGAN_SLOT_BREASTS)
 	if(breasts?.internal_fluid_datum)
-		var/min_pct = 0.05
-		var/max_pct = 0.15
+		var/min_pct = 0.15
+		var/max_pct = 0.35
 		var/min_amount = round(breasts.reagents.total_volume * min_pct)
 		var/max_amount = round(breasts.reagents.total_volume * max_pct)
 		var/transfer_amount = rand(min_amount, max_amount)
@@ -132,8 +132,8 @@
 	if(liquid_container)
 		var/obj/item/organ/genital/breasts/breasts = target.get_organ_slot(ORGAN_SLOT_BREASTS)
 		if(breasts?.internal_fluid_datum)
-			var/min_pct = 0.05
-			var/max_pct = 0.15
+			var/min_pct = 0.15
+			var/max_pct = 0.35
 			var/min_amount = round(breasts.reagents.total_volume * min_pct)
 			var/max_amount = round(breasts.reagents.total_volume * max_pct)
 			var/transfer_amount = rand(min_amount, max_amount)
