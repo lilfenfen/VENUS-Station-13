@@ -5,7 +5,7 @@
 
 /datum/map_config
 	// Metadata
-	var/config_filename = "_maps/metastation.json"
+	var/config_filename = "_maps/liverpool.json"
 	var/defaulted = TRUE  // set to FALSE by LoadConfig() succeeding
 	// Config from maps.txt
 	var/config_max_users = 0
@@ -20,9 +20,9 @@
 	var/mapping_url
 
 	// Config actually from the JSON - should default to Meta
-	var/map_name = "MetaStation"
-	var/map_path = "map_files/MetaStation"
-	var/map_file = "MetaStation.dmm"
+	var/map_name = "Liverpool"
+	var/map_path = "veilbreak/liverpool"
+	var/map_file = "liverpool.dmm"
 
 	var/traits = null
 	var/space_ruin_levels = DEFAULT_SPACE_RUIN_LEVELS
