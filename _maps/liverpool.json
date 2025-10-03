@@ -1,0 +1,19 @@
+{
+	"version": 1,
+	"map_name": "Lame Name Station",
+	"map_path": "veilbreak/liverpool",
+	"map_file": "liverpool.dmm",
+	"shuttles": {
+		"emergency": "emergency_box",
+		"cargo": "cargo_skyrat"
+	},
+	"job_changes": {
+		"prisoner": {
+			"total_positions": 4,
+			"spawn_positions": 4
+		},
+		"cook": {
+			"additional_cqc_areas": ["/area/service/kitchen/diner"]
+		}
+	}
+}
