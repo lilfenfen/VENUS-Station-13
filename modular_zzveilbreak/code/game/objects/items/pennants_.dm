@@ -10,14 +10,37 @@
 	var/on_cooldown = FALSE
 	var/cooldown_time = 20 SECONDS
 
+/obj/item/clothing/neck/aether_pennant/Initialize()
+	. = ..()
+	var/datum/action/item_action/aether_activate/action = new(src)
+	action.Grant(src.loc)  // Grant to the mob holding it
+
 /obj/item/clothing/neck/aether_pennant/equipped(mob/user, slot)
 	. = ..()
 	if(slot == ITEM_SLOT_NECK)
 		RegisterSignal(user, COMSIG_MOB_APPLY_DAMAGE, PROC_REF(on_damage))
+		var/datum/action/item_action/aether_activate/action = locate() in actions
+		if(action)
+			action.Grant(user)
 
 /obj/item/clothing/neck/aether_pennant/dropped(mob/user)
 	. = ..()
 	UnregisterSignal(user, COMSIG_MOB_APPLY_DAMAGE)
+	var/datum/action/item_action/aether_activate/action = locate() in actions
+	if(action)
+		action.Remove(user)
+
+/datum/action/item_action/aether_activate
+	name = "Activate Aether Shield"
+	desc = "Activate the Aether Pennant's shield for 1.5 seconds."
+	button_icon = 'modular_zzveilbreak/icons/item_icons/pennants.dmi'
+	button_icon_state = "aether_pennant"
+
+/datum/action/item_action/aether_activate/Trigger()
+	var/obj/item/clothing/neck/aether_pennant/pennant = target
+	if(!pennant)
+		return
+	pennant.attack_self(owner)
 
 /obj/item/clothing/neck/aether_pennant/proc/on_damage(datum/source, damage, damagetype, def_zone, blocked, forced)
 	SIGNAL_HANDLER
@@ -64,14 +87,37 @@
 	var/on_cooldown = FALSE
 	var/cooldown_time = 35 SECONDS
 
+/obj/item/clothing/neck/life_pennant/Initialize()
+	. = ..()
+	var/datum/action/item_action/life_heal/action = new(src)
+	action.Grant(src.loc)
+
 /obj/item/clothing/neck/life_pennant/equipped(mob/user, slot)
 	. = ..()
 	if(slot == ITEM_SLOT_NECK)
 		START_PROCESSING(SSobj, src)  // Start passive healing
+		var/datum/action/item_action/life_heal/action = locate() in actions
+		if(action)
+			action.Grant(user)
 
 /obj/item/clothing/neck/life_pennant/dropped(mob/user)
 	. = ..()
 	STOP_PROCESSING(SSobj, src)  // Stop passive healing
+	var/datum/action/item_action/life_heal/action = locate() in actions
+	if(action)
+		action.Remove(user)
+
+/datum/action/item_action/life_heal
+	name = "Life Heal"
+	desc = "Heal nearby allies with the Life Pennant."
+	button_icon = 'modular_zzveilbreak/icons/item_icons/pennants.dmi'
+	button_icon_state = "life_pennant"
+
+/datum/action/item_action/life_heal/Trigger()
+	var/obj/item/clothing/neck/life_pennant/pennant = target
+	if(!pennant)
+		return
+	pennant.attack_self(owner)
 
 /obj/item/clothing/neck/life_pennant/process(seconds_per_tick)
 	if(!ismob(loc))
